@@ -1,0 +1,397 @@
+<% if (!isProfileComplete) { %>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Profile Incomplete!</strong> Please complete your company profile to unlock all features.
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+<% } %>
+
+<!-- Profile Completion Modal -->
+<div class="modal fade" id="profileCompletionModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: #1a1d24; color: white; border-radius: 12px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLabel">Complete Your Profile</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>To access all features, please complete your company profile.</p>
+        <form id="profileCompletionForm" action="/admin/settings/update" method="POST">
+          <div class="mb-3">
+            <label for="companyNameModal" class="form-label">Company Name</label>
+            <input type="text" name="companyName" id="companyNameModal" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="servicesOfferedModal" class="form-label">Services Offered (comma separated)</label>
+            <input type="text" name="servicesOffered" id="servicesOfferedModal" class="form-control" placeholder="e.g. Web Design, SEO" required>
+          </div>
+          <button type="submit" class="btn w-100" style="background-color: #16da64;">Save & Continue</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay blocker for incomplete profiles -->
+<div id="blockerOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background: rgba(0,0,0,0.7); z-index: 9999; cursor: not-allowed;">
+  <div class="d-flex justify-content-center align-items-center h-100">
+    <div class="text-center text-white p-4  rounded" style="max-width: 400px; background-color: #1a1d24;">
+      <h5>✋ Please complete your profile</h5>
+      <p class="mb-3">You must complete your company profile before accessing this feature.</p>
+      <button class="btn btn-sm" style="background-color: #16da64;" data-bs-toggle="modal" data-bs-target="#profileCompletionModal">
+        Complete Profile Now
+      </button>
+    </div>
+  </div>
+</div>
+
+<% if (!isProfileComplete) { %>
+  
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = new bootstrap.Modal(document.getElementById('profileCompletionModal'));
+    modal.show();
+
+    // Block all clicks if profile is incomplete and modal is closed
+    document.addEventListener('click', function(e) {
+      const isInsideModal = e.target.closest('.modal') || e.target.classList.contains('modal');
+      const isCloseButton = e.target.classList.contains('btn-close') || e.target.closest('.btn-close');
+      const isSaveButton = e.target.closest('#profileCompletionForm');
+
+      if (!isProfileComplete && !isInsideModal && !isSaveButton) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById('blockerOverlay').classList.remove('d-none');
+      }
+    });
+
+    // Hide overlay when modal is reopened
+    document.getElementById('profileCompletionModal').addEventListener('show.bs.modal', function() {
+      document.getElementById('blockerOverlay').classList.add('d-none');
+    });
+  });
+</script>
+<% } %>
+
+
+<div class="container mt-4">
+  <h2 class="dash-title mb-4">Analytics Overview</h2>
+  <p class="muted mb-4">Key metrics and performance insights.</p>
+
+  <div class="row g-16">
+    <!-- Total Requests -->
+    <div class="col-md-4">
+      <div class="stat-card text-start">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6>Total Requests</h6>
+          <span class="card-icon"><i class="ri-file-list-3-line"></i></span>
+        </div>
+        <div class="stat-value value-green"><%= stats.totalRequests %></div>
+        <div class="stat-sub">Last 30 days</div>
+      </div>
+    </div>
+
+    <!-- Completed Jobs -->
+    <div class="col-md-4">
+      <div class="stat-card text-start">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6>Completed Jobs</h6>
+          <span class="card-icon"><i class="ri-check-double-line"></i></span>
+        </div>
+        <div class="stat-value value-amber"><%= stats.completedJobs %></div>
+        <div class="stat-sub">This month</div>
+      </div>
+    </div>
+
+    <!-- Pending Jobs -->
+    <div class="col-md-4">
+      <div class="stat-card text-start">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6>Pending Jobs</h6>
+          <span class="card-icon"><i class="ri-time-line"></i></span>
+        </div>
+        <div class="stat-value value-cyan"><%= stats.pendingJobs %></div>
+        <div class="stat-sub">Currently in progress</div>
+      </div>
+    </div>
+
+    <!-- Active Workers -->
+    <div class="col-md-4">
+      <div class="stat-card text-start">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6>Active Workers</h6>
+          <span class="card-icon"><i class="ri-user-settings-line"></i></span>
+        </div>
+        <div class="stat-value value-blue"><%= stats.activeWorkers %></div>
+        <div class="stat-sub">Engaged this week</div>
+      </div>
+    </div>
+
+    <!-- Revenue -->
+    <div class="col-md-4">
+      <div class="stat-card text-start">
+        <div class="d-flex align-items-center justify-content-between">
+          <h6>Total Revenue</h6>
+          <span class="card-icon"><i class="ri-money-dollar-circle-line"></i></span>
+        </div>
+        <div class="stat-value value-green">$<%= stats.revenue.toLocaleString() %></div>
+        <div class="stat-sub">All-time</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container my-5">
+  <h2 class="fw-bold text-center mb-4">Reports & Analytics Dashboard</h2>
+
+  <div class="row g-4">
+    <!-- 🟦 Jobs per Week -->
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm">
+        <h5 class="fw-bold mb-3 text-center">Jobs per Week</h5>
+        <canvas id="jobsChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 🟩 Worker Performance -->
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm">
+        <h5 class="fw-bold mb-3 text-center">Top Workers (Avg Rating)</h5>
+        <canvas id="workerChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 🟧 Monthly Revenue Trend -->
+    <div class="col-md-12 mt-4">
+      <div class="card p-3 shadow-sm">
+        <h5 class="fw-bold mb-3 text-center">Monthly Revenue Trend</h5>
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+<script>
+  // === Common Theme Options ===
+  const darkScales = {
+    x: { grid: { color: 'rgba(35,39,53,0.6)' }, ticks: { color: '#9aa3b2' } },
+    y: { grid: { color: 'rgba(35,39,53,0.6)' }, ticks: { color: '#9aa3b2' } }
+  };
+  const darkLegend = { labels: { color: '#9aa3b2', boxWidth: 10, boxHeight: 10 }, position: 'bottom' };
+  const darkTooltip = { backgroundColor: '#151821', titleColor: '#e8ecf4', bodyColor: '#e8ecf4', borderColor: '#232735', borderWidth: 1 };
+
+  // === 1️⃣ Jobs per Week (BAR Chart) ===
+  const jobsData = <%- JSON.stringify(jobsPerWeek) %>;
+  if (Chart.getChart("jobsChart")) Chart.getChart("jobsChart").destroy();
+
+  new Chart(document.getElementById("jobsChart"), {
+    type: "bar",
+    data: {
+      labels: Object.keys(jobsData),
+      datasets: [{
+        label: "Jobs per Week",
+        data: Object.values(jobsData),
+        backgroundColor: ctx => {
+          const i = ctx.dataIndex, last = ctx.chart.data.labels.length - 1;
+          return i === last ? "rgba(59,130,246,0.85)" : "rgba(34,197,94,0.85)"; // blue last bar, others green
+        },
+        borderColor: "rgba(21,24,33,1)",
+        borderWidth: 2,
+        borderRadius: 6,
+        barPercentage: 0.6,
+        categoryPercentage: 0.6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: darkTooltip },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#9aa3b2' }, title: { display: true, text: "Week", color: '#9aa3b2' } },
+        y: { grid: { color: 'rgba(35,39,53,0.6)' }, ticks: { color: '#9aa3b2', beginAtZero: true } }
+      },
+      layout: { padding: 8 }
+    }
+  });
+
+// === 2️⃣ Worker Performance (PIE Chart with % Labels) ===
+const workerData = <%- JSON.stringify(workerPerformance) %>;
+
+if (Chart.getChart("workerChart")) Chart.getChart("workerChart").destroy();
+
+new Chart(document.getElementById("workerChart"), {
+  type: "pie", // ✅ changed from "doughnut" to "pie"
+  data: {
+    labels: workerData.map(w => w.name),
+    datasets: [{
+      label: "Avg Rating",
+      data: workerData.map(w => w.avgRating),
+      backgroundColor: [
+        "rgba(34,197,94,0.8)",
+        "rgba(59,130,246,0.8)",
+        "rgba(250,204,21,0.8)",
+        "rgba(168,85,247,0.8)",
+        "rgba(34,211,238,0.8)"
+      ],
+      borderColor: "rgba(21,24,33,1)",
+      borderWidth: 1,
+      hoverOffset: 6
+      // ❌ removed "cutout" because pie chart is solid, not hollow
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: darkLegend, // your custom dark theme legend
+      tooltip: darkTooltip, // your custom tooltip
+      datalabels: {
+        color: "#fff",
+        font: { weight: "bold", size: 12 },
+        formatter: (value, ctx) => {
+          const dataArr = ctx.chart.data.datasets[0].data;
+          const total = dataArr.reduce((a, b) => a + b, 0);
+          const percentage = ((value / total) * 100).toFixed(1);
+          return percentage + "%";
+        },
+        // ✅ Center labels nicely in pie slices
+        anchor: "center",
+        align: "center",
+        clip: false,
+      }
+    },
+    layout: { padding: 8 }
+  },
+  plugins: [ChartDataLabels]
+});
+
+
+  // === 3️⃣ Monthly Revenue Trend (LINE Chart) ===
+  const revenueData = <%- JSON.stringify(revenueTrend) %>;
+  if (Chart.getChart("revenueChart")) Chart.getChart("revenueChart").destroy();
+
+  new Chart(document.getElementById("revenueChart"), {
+    type: "line",
+    data: {
+      labels: revenueData.map(r => r.label || ("Month " + r._id)),
+      datasets: [{
+        label: "Revenue (₹)",
+        data: revenueData.map(r => r.totalRevenue),
+        borderColor: "#a855f7",
+        backgroundColor: "rgba(168,85,247,0.15)",
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "#a855f7",
+        pointRadius: 3,
+        pointHoverRadius: 4,
+        borderWidth: 2,
+        tension: 0.35,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: darkLegend, tooltip: darkTooltip },
+      scales: darkScales,
+      layout: { padding: 8 }
+    }
+  });
+</script>
+
+
+
+<style>
+  :root{
+    --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+    --txt:#e8ecf4; --green:#22c55e; --blue:#3b82f6; --amber:#f59e0b; --purple:#a855f7;
+  }
+  .card{
+    background: var(--panel) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 12px !important;
+    color: var(--txt);
+  }
+
+  #jobsChart,
+#revenueChart {
+  width: 100% !important;
+  height: 400px !important;            /* set the desired height */
+  display: block;                      /* prevent inline canvas sizing quirks */
+}
+
+#workerChart {
+  width: 90% !important;
+  height: 400px !important;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Optional: ensure card doesn’t grow unexpectedly from padding */
+.card .chart-wrap {
+  position: relative;
+  height: 260px;                        /* match canvas height */
+}
+
+ body{ background: var(--bg); color: var(--txt); }
+
+  .dash-title{ color: var(--txt); }
+
+  .stat-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    height: 100%;
+  }
+
+  .stat-card h6{
+    color: var(--text-300);
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: .2px;
+  }
+
+  .stat-value{
+    font-size: clamp(22px, 3.4vw, 28px);
+    font-weight: 700;
+    color: var(--txt);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .stat-sub{
+    color: var(--grey);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .value-green{ color: var(--green); }
+  .value-blue{ color: var(--blue); }
+  .value-amber{ color: var(--amber); }
+  .value-cyan{ color: var(--cyan); }
+
+  .card-icon{
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: inline-grid; place-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--text-300);
+  }
+
+  .g-16{ --bs-gutter-x: 1rem; --bs-gutter-y: 1rem; }
+
+  a.btn:focus, button:focus, .list-group-item:focus{
+    outline: 2px solid var(--focus) !important;
+    outline-offset: 2px;
+  }
+</style>
+
+

@@ -1,0 +1,280 @@
+<style>
+ :root{
+  --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+  --chip:#222733; --chipText:#d8deea; --green:#22c55e; --blue:#3b82f6; --amber:#f59e0b;
+  --cyan:#22d3ee; --danger:#ef4444; --txt:#e8ecf4; --grey:#4b5563;
+  --surface:#0e1116;--rows:#0e121e;
+}
+
+/* Page */
+body{ background: var(--bg); color: var(--txt); }
+
+a{
+  text-decoration: none;
+}
+
+/* Card shell */
+.card-soft{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px var(--bg);
+  overflow: hidden;
+}
+.card-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.card-head h5, .card-head h4{ margin:0; color: var(--txt); }
+.subtext{ color: var(--muted); font-size:12px; }
+
+/* Header action button (pill, slim) */
+.btn-slim{
+  background: var(--chip); color: var(--txt); border: 1px solid var(--line);
+  border-radius:999px; padding:6px 12px; font-weight:600; font-size:13px;
+}
+.btn-slim:hover{ background: var(--row); }
+
+/* Table minimalist */
+.table-wrap{ padding: 8px; }
+.table-clean{
+  width:100%; border-collapse:separate; border-spacing:0;
+  color: var(--txt);
+}
+.table-clean th, .table-clean td{
+  padding: 12px 10px; text-align:center;
+  border-bottom: 1px solid var(--line);
+}
+.table-clean thead th{
+  font-weight:700; color: var(--txt); background: var(--rows);
+  position: sticky; top: 0; z-index: 1;
+}
+.table-clean tbody tr:nth-child(odd){ background: var(--panel); }
+.table-clean tbody tr:nth-child(even){ background: var(--panel); }
+
+/* Status dots + text */
+.status-dot{
+  display:inline-flex; align-items:center; gap:8px;
+  font-weight:600; font-size:13px; color: var(--txt);
+}
+.dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+.dot.green{ background: var(--green); }
+.dot.red{ background: var(--danger); }
+
+/* View / Pay actions (slim) */
+.btn-view{
+  background: var(--chip); color: var(--txt); border: 1px solid var(--line);
+  padding:6px 12px; border-radius:8px; font-weight:600; font-size:13px;
+}
+.btn-view:hover{ background: var(--row); }
+
+.btn-pay{
+  background: var(--chip); color: var(--green); border: 1px solid var(--line);
+  padding:6px 12px; border-radius:8px; font-weight:700; font-size:13px;
+}
+.btn-pay:hover{ background: var(--row); }
+
+/* Disabled/muted pill */
+.btn-pill-muted{
+  background: var(--chip); color: var(--muted); border: 1px solid var(--line);
+  padding:6px 12px; border-radius:8px; font-weight:600; font-size:13px;
+}
+
+/* Chips for ids/indices */
+.chip{
+  background: var(--chip); color: var(--chipText);
+  border: 1px solid var(--line);
+  padding:4px 10px; border-radius:8px; font-size:12px; display:inline-block;
+}
+
+/* Section spacing */
+.section{ margin-bottom: 20px; }
+
+.invoice-container {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 0 0 12px 12px;
+}
+
+/* ✅ Scrollbar (consistent) */
+.invoice-container::-webkit-scrollbar {
+  width: 10px;
+}
+.invoice-container::-webkit-scrollbar-track {
+  background: var(--panel);
+}
+.invoice-container::-webkit-scrollbar-thumb {
+  background: #444b5e;
+  border-radius: 12px;
+  border: 2px solid var(--panel);
+}
+.invoice-container::-webkit-scrollbar-thumb:hover {
+  background: #5a637a;
+}
+.invoice-container {
+  scrollbar-width: thin;
+  scrollbar-color: #444b5e var(--panel);
+}
+
+
+
+</style>
+
+<div class="container mt-5">
+  <h2 class="fw-bold text-center mb-4">Invoices & Worker Payments</h2>
+
+ <!-- Customer Invoices -->
+<section class="section card-soft">
+  <div class="card-head d-flex justify-content-between align-items-center flex-wrap gap-3">
+  <!-- LEFT SIDE -->
+  <div>
+    <h5 class="mb-0">Invoices Table</h5>
+    <div class="subtext">
+      <%= admin?.name || '' %> —
+      <%= (!invoices || invoices.length===0)
+        ? 'No invoices yet'
+        : (invoices.length + ' invoice(s)') %>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="d-flex align-items-center gap-3">
+    <!-- ✅ Filter Dropdown -->
+    <form method="get" action="/admin/invoices" class="m-0">
+      <select name="invoiceStatus"
+        class="form-select  text-light rounded-pill border-1 border-dark px-3 py-1 " style="background-color: var(--rows);"
+        onchange="this.form.submit()">
+        <option value="All" <%= invoiceFilter==='All'?'selected':'' %>>All</option>
+        <option value="Paid" <%= invoiceFilter==='Paid'?'selected':'' %>>Paid</option>
+        <option value="Unpaid" <%= invoiceFilter==='Unpaid'?'selected':'' %>>Unpaid</option>
+      </select>
+    </form>
+
+    <!-- ✅ Create Invoice Button -->
+    <a href="/admin/invoices/create"
+      class="btn-slim">
+      <i class="ri-add-line me-1"></i> Create Invoice
+    </a>
+  </div>
+</div>
+
+
+  <% if (!invoices || invoices.length===0) { %>
+    <div class="p-3 subtext">No invoices yet.</div>
+  <% } else { %>
+    <div class="invoice-container"> <!-- ✅ Scrollable container -->
+      <table class="table-clean">
+        <thead>
+          <tr>
+            <th>Invoice ID</th>
+            <th>Customer</th>
+            <th>Job (Service Type)</th>
+            <th>Service Fee</th>
+            <th>Platform Fee</th>
+            <th>Total (₹)</th>
+            <th>Status</th>
+            <th>View</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% invoices.forEach((inv)=> { %>
+          <tr>
+            <td><span class="chip"><%= inv.shortId %></span></td>
+            <td><%= inv.customer ? inv.customer.name : "N/A" %></td>
+            <td><%= inv.job ? inv.job.serviceType : "N/A" %></td>
+            <td>₹<%= inv.serviceAmount.toFixed(2) %></td>
+            <td>₹<%= inv.platformFee.toFixed(2) %></td>
+            <td class="fw-semibold">₹<%= inv.totalAmount.toFixed(2) %></td>
+            <td>
+              <% if (inv.status==="Paid") { %>
+                <span class="status-dot"><span class="dot green"></span>Paid</span>
+              <% } else { %>
+                <span class="status-dot"><span class="dot red"></span>Unpaid</span>
+              <% } %>
+            </td>
+            <td>
+              <a href="/admin/invoice/<%= inv._id %>" class="btn-view">View</a>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<!-- Worker Payments -->
+<section class="section card-soft">
+  <div class="card-head">
+  <div>
+    <h5>Worker Payments Table</h5>
+    <div class="subtext">
+      <%= (!customerPaidInvoices || customerPaidInvoices.length===0)
+        ? 'No customer paid services yet'
+        : (customerPaidInvoices.length + ' eligible payment(s)') %>
+    </div>
+  </div>
+
+  <!-- ✅ Worker payment filter -->
+  <form method="get" action="/admin/invoices" class="m-0">
+    <select name="paymentStatus"
+      class="form-select  text-light rounded-pill border-1 border-dark px-3 py-1"  style="background-color: var(--rows);"
+      onchange="this.form.submit()">
+      <option value="All" <%= paymentFilter==='All'?'selected':'' %>>All</option>
+      <option value="Paid" <%= paymentFilter==='Paid'?'selected':'' %>>Paid</option>
+      <option value="Unpaid" <%= paymentFilter==='Unpaid'?'selected':'' %>>Unpaid</option>
+    </select>
+  </form>
+</div>
+
+
+  <% if (!customerPaidInvoices || customerPaidInvoices.length===0) { %>
+    <div class="p-3 subtext">No customer paid services yet.</div>
+  <% } else { %>
+    <div class="invoice-container"> <!-- ✅ Scrollable container -->
+      <table class="table-clean">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Job Title</th>
+            <th>Customer</th>
+            <th>Total Amount (₹)</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% customerPaidInvoices.forEach((inv, i)=> { %>
+          <tr>
+            <td><span class="chip">#<%= i+1 %></span></td>
+            <td><%= inv.job ? inv.job.serviceType : "N/A" %></td>
+            <td><%= inv.job && inv.job.customer ? inv.job.customer.name : "N/A" %></td>
+            <td class="fw-bold" style="color: var(--green);">₹<%= inv.totalAmount.toFixed(2) %></td>
+            <td>
+              <% if (paidJobIds.includes(inv.job._id.toString())) { %>
+                <span class="status-dot"><span class="dot green"></span>Paid</span>
+              <% } else { %>
+                <span class="status-dot"><span class="dot red"></span>Unpaid</span>
+              <% } %>
+            </td>
+            <td>
+              <% if (!paidJobIds.includes(inv.job._id.toString())) { %>
+                <a href="/admin/invoices/worker/new/<%= inv.job._id %>" class="btn-pay">
+                  <i class="bi bi-cash-coin me-1"></i>Pay Worker
+                </a>
+              <% } else { %>
+                <button class="btn-pill-muted" disabled>Paid</button>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+</div>

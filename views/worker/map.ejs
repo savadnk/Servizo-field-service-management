@@ -1,0 +1,189 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+  #map {
+    height: 650px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  /* optional highlight animation for selected marker */
+.pulse-marker {
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); filter: drop-shadow(0 0 3px lime); }
+  50% { transform: scale(1.2); filter: drop-shadow(0 0 8px lime); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 3px lime); }
+}
+</style>
+
+<div class="container my-4">
+  <h2 class="jobs-title mb-4">My Job Locations</h2>
+  <div id="map"></div>
+</div>
+
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const jobs = <%- JSON.stringify(jobs) %>;
+
+    // ✅ Initialize map (center Kerala)
+    const map = L.map("map").setView([10.8505, 76.2711], 8);
+
+    // ✅ Define base layers
+    const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    });
+
+    // ✅ Google Satellite Layer
+    const satellite = L.tileLayer(
+      "https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+      {
+        maxZoom: 20,
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
+        attribution: "&copy; Google"
+      }
+    );
+
+    // ✅ Set satellite as default
+    satellite.addTo(map);
+
+    // ✅ Add layer control (user can switch between map types)
+    const baseMaps = {
+      "Satellite": satellite,
+      "Street Map": osm
+    };
+    L.control.layers(baseMaps).addTo(map);
+
+    // ✅ Add job markers
+    jobs.forEach(job => {
+      if (job.lat && job.lng) {
+        const marker = L.marker([job.lat, job.lng]).addTo(map);
+        marker.bindPopup(`
+          <b>${job.serviceType}</b><br>
+          Status: ${job.status}<br>
+          Deadline: ${new Date(job.deadline).toLocaleDateString()}<br>
+          Location: ${job.street}, ${job.city}, ${job.state} - ${job.pincode}
+        `);
+      }
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const jobs = <%- JSON.stringify(jobs) %>;
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedJobId = urlParams.get("jobId"); // ✅ get ?jobId=... from URL
+
+    // ✅ Initialize map (center Kerala)
+    const map = L.map("map").setView([10.8505, 76.2711], 8);
+
+    // ✅ Define base layers
+    const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    });
+
+    const satellite = L.tileLayer(
+      "https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+      {
+        maxZoom: 20,
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
+        attribution: "&copy; Google"
+      }
+    );
+
+    // ✅ Add default layer
+    satellite.addTo(map);
+    L.control.layers({ "Satellite": satellite, "Street Map": osm }).addTo(map);
+
+    let selectedMarker = null;
+
+    // ✅ Add job markers
+    jobs.forEach(job => {
+      if (job.lat && job.lng) {
+        const marker = L.marker([job.lat, job.lng]).addTo(map);
+        marker.bindPopup(`
+          <b>${job.serviceType}</b><br>
+          Status: ${job.status}<br>
+          Deadline: ${new Date(job.deadline).toLocaleDateString()}<br>
+          Location: ${job.street}, ${job.city}, ${job.state} - ${job.pincode}
+        `);
+
+        // ✅ Check if this is the job we need to zoom into
+        if (selectedJobId && job.id === selectedJobId) {
+          selectedMarker = marker;
+        }
+      }
+    });
+
+    // ✅ After all markers added, zoom to the selected one if exists
+    if (selectedMarker) {
+      map.setView(selectedMarker.getLatLng(), 15); // zoom in
+      selectedMarker.openPopup();
+
+      // optional bounce animation (looks cool)
+      selectedMarker._icon.classList.add("pulse-marker");
+    }
+  });
+
+
+
+
+</script> -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const jobs = <%- JSON.stringify(jobs) %>;
+
+    // Read ?jobId=... from query string
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedJobId = urlParams.get("jobId"); // string or null
+
+    // Init map (Kerala center)
+    const map = L.map("map").setView([10.8505, 76.2711], 8); // setView is fine for init [web:4]
+    const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    });
+    const satellite = L.tileLayer(
+      "https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+      { maxZoom: 20, subdomains: ["mt0","mt1","mt2","mt3"], attribution: "&copy; Google" }
+    );
+    satellite.addTo(map);
+    L.control.layers({ "Satellite": satellite, "Street Map": osm }).addTo(map);
+
+    // Keep markers by id for quick access
+    const markersById = {}; // { [id]: L.Marker } [web:6]
+
+    // Create markers
+    jobs.forEach(job => {
+      if (job.lat && job.lng) {
+        const marker = L.marker([job.lat, job.lng]).addTo(map); // [web:4]
+        marker.bindPopup(`
+          <b>${job.serviceType}</b><br>
+          Status: ${job.status}<br>
+          Deadline: ${new Date(job.deadline).toLocaleDateString()}<br>
+          Location: ${job.street}, ${job.city}, ${job.state} - ${job.pincode}
+        `); // [web:3]
+
+        // Store by either _id or id
+        if (job._id) markersById[job._id] = marker; // [web:6]
+        if (job.id) markersById[job.id] = marker;   // [web:6]
+      }
+    });
+
+    // After markers exist, focus if selectedJobId present
+    if (selectedJobId && markersById[selectedJobId]) {
+      const m = markersById[selectedJobId];
+      const latlng = m.getLatLng();
+      map.flyTo(latlng, 15, { duration: 1.5 }); // smooth zoom-in [web:5][web:1]
+      m.openPopup(); // show details [web:3]
+
+      // optional pulse highlight
+      if (m._icon) m._icon.classList.add("pulse-marker"); // custom CSS hook [web:5]
+    }
+  });
+</script>
+
+
+

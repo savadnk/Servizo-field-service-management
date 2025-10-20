@@ -1,0 +1,160 @@
+
+
+<div class="container mt-4">
+  <h2 class="mb-4 ">Customer Oversight</h2>
+
+  <!-- Scrollable Table Wrapper -->
+  <div class="scrollable-table">
+    <table class="table table-hover text-center">
+      <thead style="position: sticky; top: 0; background: #343a40; color: white;">
+        <tr>
+          <th>#</th>
+          <th>Customer ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Total Requests</th>
+          <th>Total Payments</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (customers.length > 0) { %>
+          <% customers.forEach((cust, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= cust.shortId %></td>
+              <td><%= cust.name %></td>
+              <td><%= cust.email %></td>
+              <td><%= cust.phone %></td>
+              <td><%= cust.type %></td>
+              <td>
+                <% if (cust.status) { %>
+                  <span class="badge ">Active</span>
+                <% } else { %>
+                  <span class="badge ">Blocked</span>
+                <% } %>
+              </td>
+              <td><%= cust.totalRequests %></td>
+              <td>₹<%= cust.totalPayments %></td>
+              <td>
+                <% if (cust.status) { %>
+                  <!-- Block Button -->
+                  <form action="/superadmin/customers/<%= cust.id %>/block" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-x-circle"></i> Block
+                    </button>
+                  </form>
+                <% } else { %>
+                  <!-- Unblock Button -->
+                  <form action="/superadmin/customers/<%= cust.id %>/unblock" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-success">
+                      <i class="bi bi-check-circle"></i> Unblock
+                    </button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="10" class="text-muted">No customers found</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+    .table thead th {
+        /* border-top: none !important; */
+        font-weight: 600;
+        color: #e9ecef;
+        background-color: #151821 !important;
+    }
+
+
+
+    .table td,
+    .table th {
+        /* border-top: none !important; */
+        color: #e9ecef;
+        vertical-align: middle;
+        padding: .75rem 0.5rem;
+        background-color: #151821 !important;
+    }
+
+    .hover-effect:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table-responsive {
+        border-radius: 1rem;
+        overflow: hidden;
+        background-color: #151821;
+    }
+
+    .btn-outline-success,
+    .btn-outline-danger,
+    .btn-outline-primary {
+        transition: all 0.2s ease;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #198754;
+        color: white;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Target the scrollable div */
+    .scrollable-table {
+        max-height: 400px;
+        max-width: 100%;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    /* Scrollbar width */
+    .scrollable-table::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    /* Track (background of scrollbar) */
+    .scrollable-table::-webkit-scrollbar-track {
+        background: #797979;
+        /* light gray */
+        border-radius: 5px;
+    }
+
+    /* Thumb (draggable handle) */
+    .scrollable-table::-webkit-scrollbar-thumb {
+        background: #16da64;
+        /* Bootstrap blue */
+        border-radius: 5px;
+    }
+
+    /* Thumb on hover */
+    .scrollable-table::-webkit-scrollbar-thumb:hover {
+        background: #0fac4e;
+        /* darker blue */
+    }
+</style>

@@ -1,0 +1,123 @@
+<div class="container mt-4">
+  <h2 class="text-white mb-1">Profile Settings</h2>
+  <p class="text-muted mb-4">Manage your profile and preferences here.</p>
+
+  <div class="card profile p-4 text-white shadow-sm border-0" style="background-color: #151821; border-radius: 12px;">
+    
+    <!-- Profile Header -->
+    <div class="d-flex align-items-center mb-4">
+      <img src="<%= user?.profilePhoto || '/images/logo.svg' %>" alt="Profile Photo"
+           class="rounded-circle border border-secondary" width="90" height="90">
+      <div class="ms-3">
+        <h4 class="mb-1"><%= user?.name || '' %></h4>
+        <p class="text-secondary mb-2">
+          <%= user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1) || '' %>
+        </p>
+        <form action="/superadmin/settings/photo" method="POST" enctype="multipart/form-data" class="d-flex gap-2 align-items-center">
+          <input type="file" name="profilePhoto" class="form-control form-control-sm bg-dark text-light border-0" accept="image/*" required>
+          <button class="btn btn-success btn-sm" type="submit" style="background-color: #16da64;">Update Photo</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Personal Info -->
+    <form action="/superadmin/settings/update" method="POST" id="profileForm" novalidate>
+      <h5 class="mb-3">Personal Information</h5>
+
+      <div class="mb-3">
+        <label for="name" class="form-label text-light">Name</label>
+        <input type="text" name="name" id="name" class="form-control bg-dark text-light border-0"
+               value="<%= user.name %>" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label text-light">Email</label>
+        <input type="email" name="email" id="email" class="form-control bg-dark text-light border-0"
+               value="<%= user.email %>" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="phone" class="form-label text-light">Phone Number</label>
+        <input type="tel" name="phone" id="phone" class="form-control bg-dark text-light border-0"
+               value="<%= user.phone %>">
+      </div>
+
+      <button type="submit" class="btn btn-success mt-2" style="background-color: #16da64;">Save Changes</button>
+    </form>
+
+    <hr class="bg-light my-4">
+
+    <!-- Password Change -->
+    <form action="/superadmin/settings/password" method="POST" id="passwordForm" novalidate>
+      <h5 class="mb-3">Security Settings</h5>
+
+      <div class="mb-3">
+        <label for="newPassword" class="form-label text-light">New Password</label>
+        <input type="password" name="newPassword" id="newPassword"
+               class="form-control bg-dark text-light border-0" minlength="8" required>
+        <div class="form-text text-secondary">Minimum 8 characters recommended.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="confirmNewPassword" class="form-label text-light">Confirm New Password</label>
+        <input type="password" name="confirmNewPassword" id="confirmNewPassword"
+               class="form-control bg-dark text-light border-0" required>
+        <div class="invalid-feedback">Passwords must match.</div>
+      </div>
+
+      <button type="submit" class="btn btn-success" style="background-color: #16da64;">Change Password</button>
+    </form>
+  </div>
+</div>
+
+<style>
+  body {
+    background-color: #000;
+  }
+  .form-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 .2rem rgba(22, 218, 100, .15);
+  }
+  .text-muted {
+    color: #9aa3b2 !important;
+  }
+</style>
+
+<script>
+
+  // Read values passed from res.render
+  const renderSuccess = "<%= typeof success !== 'undefined' ? success : '' %>";
+  const renderError = "<%= typeof error !== 'undefined' ? error : '' %>";
+
+  if (renderSuccess) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: renderSuccess,
+      confirmButtonText: 'OK',
+      timer: 1800,
+      timerProgressBar: true
+    }); // docs examples use icon/title/text options. [web:66]
+  } else if (renderError) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: renderError,
+      confirmButtonText: 'OK'
+    }); // standard error modal pattern. [web:66]
+  }
+
+      // Password matching
+  const pwdForm = document.getElementById('passwordForm');
+  const newPwd = document.getElementById('newPassword');
+  const confirmPwd = document.getElementById('confirmNewPassword');
+  function checkMatch() {
+    if (confirmPwd.value && newPwd.value !== confirmPwd.value) {
+      confirmPwd.setCustomValidity('Passwords do not match');
+    } else {
+      confirmPwd.setCustomValidity('');
+    }
+  }
+  newPwd?.addEventListener('input', checkMatch);
+  confirmPwd?.addEventListener('input', checkMatch);
+</script>

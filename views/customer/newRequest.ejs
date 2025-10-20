@@ -1,0 +1,111 @@
+
+<style>
+  
+
+  body{ background: var(--bg); color: var(--txt); }
+
+  .sheet{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.35);
+  }
+
+  .hint{ color: var(--muted); font-size: 13px; }
+
+  .form-control, .form-select, textarea{
+    background: var(--row);
+    border: 1px solid var(--line);
+    color: var(--txt);
+  }
+  .form-control:focus, .form-select:focus, textarea:focus{
+    border-color: rgba(34,197,94,.6);
+    box-shadow: 0 0 0 .2rem rgba(34,197,94,.15);
+  }
+
+  .submit-bar{
+    background: var(--green);
+    color: #0b1610;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    width: 100%;
+    font-weight: 600;
+  }
+</style>
+
+<div class="container my-4">
+  <h3 class="mb-1">Submit a New Service Request</h3>
+  <div class="hint mb-3">Please fill out the form below with details about the service need.</div>
+
+  <form action="/customer/request" method="POST" class="sheet">
+
+    <!-- Customer Name -->
+    <div class="mb-3">
+      <label class="form-label">Customer Name</label>
+      <input type="text" class="form-control" value="<%= customer.name %>" readonly>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-control" value="<%= customer.email %>" readonly>
+    </div>
+
+    <!-- Service Type (grouped by admin) -->
+    <div class="mb-3">
+      <label class="form-label">Service Type</label>
+      <select name="serviceType" class="form-select" required>
+        <option value="">Select a service type</option>
+        <% admins.forEach(admin => { %>
+          <optgroup label="<%= admin.companyName %>">
+            <% (admin.servicesOffered || []).forEach(service => { %>
+              <option value="<%= service %>" data-admin="<%= admin._id %>"><%= service %></option>
+            <% }) %>
+          </optgroup>
+        <% }) %>
+      </select>
+    </div>
+
+    <!-- Hidden admin field -->
+    <input type="hidden" name="admin" id="adminField">
+
+    <!-- Address -->
+    <div class="mb-3">
+      <label class="form-label">Location (Address)</label>
+      <select name="address" class="form-select" required>
+        <option value="">Select Address</option>
+        <% (addresses || []).forEach(addr => { %>
+          <option value="<%= addr._id %>"><%= addr.label %> — <%= addr.street %>, <%= addr.city %></option>
+        <% }) %>
+      </select>
+      <div class="hint mt-1">Enter the full address where the service is needed.</div>
+    </div>
+
+    <!-- Desired date -->
+    <div class="mb-3">
+      <label class="form-label">Desired date</label>
+      <input type="date" name="deadline" class="form-control" required>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label class="form-label">Description of Service Needed</label>
+      <textarea name="description" class="form-control" rows="5" placeholder="Please describe the issue or service you require in detail (e.g., 'Leaky faucet in kitchen sink', 'Electrical outlet not working in living room')." required></textarea>
+    </div>
+
+    <!-- Submit bar -->
+    <button type="submit" class="submit-bar">Submit Request</button>
+  </form>
+</div>
+
+<script>
+  // Auto-fill admin field based on selected service
+  const serviceSelect = document.querySelector("select[name='serviceType']");
+  const adminField = document.getElementById("adminField");
+  serviceSelect.addEventListener("change", function () {
+    const opt = this.options[this.selectedIndex];
+    adminField.value = opt.getAttribute("data-admin") || "";
+  });
+</script>

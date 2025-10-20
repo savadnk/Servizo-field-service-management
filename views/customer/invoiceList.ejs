@@ -1,0 +1,187 @@
+<style>
+ :root{
+  --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+  --chip:#222733; --chipText:#d8deea; --green:#22c55e; --blue:#141b25; --card:#151821;
+  --amber:#f59e0b; --danger:#ef4444; --txt:#e8ecf4; --grey:#4b5563;
+  --text-100:#e8f1ee; --text-300:#a7b0ad; --surface:#111418;
+}
+
+/* Shell panel */
+.table-shell{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  padding: 12px;
+}
+.table-responsive{
+  max-height: 500px;
+  overflow-y: auto;
+  display: block;
+}
+
+
+
+/* Base table */
+.table-darkx{
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: var(--txt);
+  margin: 0;
+  font-size: 14px;
+}
+.table-darkx thead th{
+  position: sticky; top: 0; z-index: 2;
+  background: var(--blue);
+  color: var(--txt);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.table-darkx tbody td{
+  border-bottom: 1px solid var(--line);
+  padding: 12px 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Scollable */
+ .table-responsive::-webkit-scrollbar {
+    width: 10px;
+    /* scrollbar width */
+  }
+
+  .table-responsive::-webkit-scrollbar-track {
+    background: var(--panel);
+    /* track background */
+    border-radius: 12px;
+  }
+
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: #444b5e;
+    /* thumb color */
+    border-radius: 12px;
+    border: 2px solid var(--panel);
+    /* spacing effect */
+  }
+
+  .table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #5a637a;
+    /* hover color */
+  }
+
+  /* Firefox */
+  .table-responsive {
+    scrollbar-width: thin;
+    /* "auto" | "thin" */
+    scrollbar-color: #444b5e var(--panel);
+    /* thumb | track */
+  }
+
+
+/* Status pills */
+.badge-pill{
+  border-radius: 999px; padding: 6px 10px; font-weight: 700; border: 1px solid var(--line);
+}
+.badge-paid{ background: rgba(34,197,94,.15); color: var(--green); border-color: rgba(34,197,94,.35); }
+.badge-pending{ background: rgba(245,158,11,.15); color: var(--amber); border-color: rgba(245,158,11,.35); }
+.badge-unpaid{ background: rgba(239,68,68,.15); color: var(--danger); border-color: rgba(239,68,68,.35); }
+
+/* Small chip/id */
+.chip{
+  background: var(--chip); color: var(--chipText);
+  border: 1px solid var(--line);
+  padding: 4px 10px; border-radius: 8px; font-size: 12px; display: inline-block;
+}
+
+/* Buttons */
+.btn-view{
+  color:#dbe7ff; border:1px solid #2b3b58; background: transparent; border-radius:8px; padding:6px 10px;
+}
+.btn-view:hover{ background:#1f2634; }
+.btn-success{
+  background: rgba(34,197,94,.18); color: var(--green); border:1px solid rgba(34,197,94,.35); border-radius:8px; padding:6px 10px;
+}
+.btn-success:hover{ background: rgba(34,197,94,.28); }
+
+/* Utilities */
+.table-actions{ display:flex; gap:8px; justify-content:center; }
+.table-title{ color: var(--text-100); font-weight: 800; }
+</style>
+
+<div class="container my-4">
+  <h2 class="mb-4 text-center fw-bold" style="color:var(--text-100)">My Invoices</h2>
+
+   <div class="d-flex align-items-center gap-3 mb-2">
+    <!-- ✅ Filter Dropdown -->
+    <form method="get" action="/customer/invoices" class="m-0">
+      <select name="invoiceStatus"
+        class="form-select  text-light rounded-pill border-1 border-dark px-4 py-1  " style="background-color: var(--bg);"
+        onchange="this.form.submit()">
+        <option value="All" <%= invoiceStatus==='All'?'selected':'' %>>All</option>
+        <option value="Paid" <%= invoiceStatus==='Paid'?'selected':'' %>>Paid</option>
+        <option value="Unpaid" <%= invoiceStatus==='Unpaid'?'selected':'' %>>Unpaid</option>
+      </select>
+    </form>
+
+  
+</div>
+
+  <% if (invoices.length === 0) { %>
+    <div class="panel p-3 text-center" style="color:var(--muted)">No invoices available yet.</div>
+  <% } else { %>
+    <div class="table-shell">
+  <div class="table-responsive">
+    <table class="table-darkx">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Job Title</th>
+          <th>Agency</th>
+          <th>Service Amount</th>
+          <th>Platform Fee</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% invoices.forEach((invoice, index) => { %>
+          <tr>
+            <td><span class="chip">#<%= index + 1 %></span></td>
+            <td><%= invoice.job ? invoice.job.serviceType : "N/A" %></td>
+            <td><%= invoice.admin ? invoice.admin.companyName : "N/A" %></td>
+            <td>₹<%= invoice.serviceAmount.toFixed(2) %></td>
+            <td>₹<%= invoice.platformFee.toFixed(2) %></td>
+            <td class="fw-semibold">₹<%= invoice.totalAmount.toFixed(2) %></td>
+            <td>
+              <% if (invoice.status === "Paid") { %>
+                <span class="badge-pill badge-paid">Paid</span>
+              <% } else { %>
+                <span class="badge-pill badge-unpaid">Unpaid</span>
+              <% } %>
+            </td>
+            <td><%= new Date(invoice.issuedDate).toLocaleDateString() %></td>
+            <td class="table-actions">
+              <a href="/customer/invoice/<%= invoice._id %>" class="btn btn-sm btn-view">
+                <i class="bi bi-file-earmark-pdf"></i> View
+              </a>
+              <% if (invoice.status === "Unpaid") { %>
+                <a href="/customer/invoice/<%= invoice._id %>/pay" class="btn btn-sm btn-success">
+                  <i class="bi bi-credit-card"></i> Pay Now
+                </a>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  <% } %>
+</div>

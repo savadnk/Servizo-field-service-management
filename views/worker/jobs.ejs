@@ -1,0 +1,225 @@
+<style>
+  body{ background: var(--bg); }
+
+  .jobs-title{ color: var(--txt); }
+
+  /* Card grid */
+  .job-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    height: 100%;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  }
+  .job-title{ color: var(--txt); font-weight: 700; font-size: 16px; }
+  .job-meta{ color: var(--muted); font-size: 13px; }
+  .job-meta i{ color: var(--text-300); }
+
+  /* Status badges (chips) */
+  .status-chip{
+    display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px;
+    border:1px solid var(--line); color: var(--text-300); background: var(--row);
+  }
+  .status-assigned{ background: rgba(156,163,175,.15); color: var(--text-300); border-color: rgba(156,163,175,.35); }
+  .status-accepted{ background: rgba(59,130,246,.15); color: var(--blue); border-color: rgba(59,130,246,.35); }
+  .status-progress{ background: rgba(34,211,238,.15); color: var(--cyan); border-color: rgba(34,211,238,.35); }
+  .status-paused{ background: rgba(245,158,11,.15); color: var(--amber); border-color: rgba(245,158,11,.35); }
+  .status-completed{ background: rgba(34,197,94,.15); color: var(--green); border-color: rgba(34,197,94,.35); }
+
+  /* Card actions */
+  .btn-ghost{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--txt);
+  }
+  .btn-ghost:hover{ background: #1b1f26; }
+
+  .status-select{
+    background: var(--row);
+    color: var(--txt);
+    border: 1px solid var(--line);
+  }
+
+  /* Modal styling (detail sheet) */
+  .modal-content{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .modal-header{
+    background: var(--row);
+    color: var(--txt);
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-body{ color: var(--txt); }
+  .modal-body .muted{ color: var(--muted); }
+  .btn-close.btn-close-white{ filter: invert(1); }
+  .btn-secondary{ background: var(--surface); border: 1px solid var(--line); color: var(--txt); }
+  .btn-secondary:hover{ background: #1b1f26; }
+
+  /* Modal action bar */
+  .action-bar .btn{
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .btn-accept { background: rgba(34,197,94,.18); color: var(--green); border: 1px solid rgba(34,197,94,.35); }
+  .btn-accept:hover { background: rgba(34,197,94,.28); }
+  .btn-progress { background: rgba(34,211,238,.18); color: var(--cyan); border: 1px solid rgba(34,211,238,.35); }
+  .btn-progress:hover { background: rgba(34,211,238,.28); }
+  .btn-pause { background: rgba(245,158,11,.18); color: var(--amber); border: 1px solid rgba(245,158,11,.35); }
+  .btn-pause:hover { background: rgba(245,158,11,.28); }
+  .btn-complete { background: rgba(34,197,94,.18); color: var(--green); border: 1px solid rgba(34,197,94,.35); opacity: .7; }
+  .btn-complete.enabled { opacity: 1; }
+
+  /* Grid spacing */
+  .g-16{ --bs-gutter-x: 1rem; --bs-gutter-y: 1rem; }
+</style>
+
+<div class="container mt-4">
+  <h2 class="jobs-title mb-4">My Jobs</h2>
+
+  <form method="get" action="/worker/jobs" class="mb-3">
+  <!-- Status filter -->
+  <select name="status" class="form-select form-select bg-black text-light rounded-pill border-1 border-dark px-4 py-2 fs-6 w-auto"
+          onchange="this.form.submit()">
+    <option value="">All Status</option>
+    <option value="Assigned" <%= selectedStatus==="Assigned" ? "selected" : "" %>>Assigned</option>
+    <option value="Accepted" <%= selectedStatus==="Accepted" ? "selected" : "" %>>Accepted</option>
+    <option value="Paused" <%= selectedStatus==="Paused" ? "selected" : "" %>>Paused</option>
+    <option value="Completed" <%= selectedStatus==="Completed" ? "selected" : "" %>>Completed</option>
+  </select>
+</form>
+
+  <% if (jobs && jobs.length > 0) { %>
+    <div class="row g-16 mb-5">
+      <% jobs.forEach(assign => { 
+           const st = assign.status;
+           const badgeClass = 
+             st==='Completed' ? 'status-completed' :
+             st==='Accepted' ? 'status-accepted' :
+             st==='Paused' ? 'status-paused' : 'status-assigned';
+      %>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="job-card d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex align-items-start justify-content-between">
+                <h4 class="job-title m-0"><%= assign.job.serviceType %></h4>
+                
+              </div>
+
+              <div class="job-meta mt-2">
+                <div class="d-flex align-items-center gap-2 pb-1">
+                  
+                  <span style="color: var(--txt);"><%= assign.job.customer?.name || 'Unknown' %></span >
+                </div>
+                <div class="d-flex align-items-center gap-2 py-1">
+                  <i class="ri-map-pin-line" style="color: var(--green); "></i>
+                  <span style="color: var(--txt);">
+                   <span style="color: var(--txt);" class="fw-bold"><%= assign.job.address?.label %> -  </span>  <%=assign.job.address?.street %>, <%= assign.job.address?.city %>, <%= assign.job.address?.state %>
+                  </span style="color: var(--txt);">
+                </div>
+                <div class="d-flex align-items-center gap-2 ">
+                  <i class="ri-calendar-line" style="color: var(--green);"></i>
+                  <span style="color: var(--txt);"><%= new Date(assign.job.deadline).toLocaleDateString() %></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between mt-3">
+              <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#jobModal-<%= assign._id %>" style="background-color: var(--brand-600);">
+                View Details
+              </button>
+              <span class="status-chip <%= badgeClass %>"><%= assign.status %></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: Detailed job sheet -->
+        <div class="modal fade" id="jobModal-<%= assign._id %>" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <div class="w-100 ">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <h5 class="modal-title">
+                      <i class="ri-briefcase-4-line me-2"></i><%= assign.job.serviceType %>
+                    </h5>
+                    <span class="status-chip <%= badgeClass %>"><%= assign.status %></span>
+                  </div>
+                  <div class="mt-1" style="color: var(--muted); font-size: 12px;">
+                    <i class="ri-user-line me-1"></i><%= assign.job.customer?.name || 'Unknown' %>
+                    <span class="ms-3 " style="color: var(--muted);"><i class="ri-phone-line me-1 "></i><%= assign.job.customer?.phone || 'N/A' %></span>
+                  </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="modal"></button>
+              </div>
+
+              <div class="modal-body">
+                <h6 class="mb-2">Job Description</h6>
+                <p class="muted">
+                  <%= assign.job.description || 'No description provided.' %>
+                </p>
+
+<h6 class="mt-4 mb-2">Location</h6>
+<p class="muted">
+  <i class="ri-building-2-line me-1"></i>
+  <% if (assign.job.status !== "Completed") { %>
+    <!-- ✅ Clickable link only for uncompleted jobs -->
+    <a 
+      href="/worker/maps?jobId=<%= assign.job._id %>"
+      style="color: var(--txt); text-decoration: none; cursor: pointer;">
+      <span><%= assign.job.address?.label %> - </span>
+      <%= assign.job.address?.street %>, 
+      <%= assign.job.address?.city %>, 
+      <%= assign.job.address?.state %> - 
+      <%= assign.job.address?.pincode %>
+    </a>
+  <% } else { %>
+    <!-- ❌ Completed jobs — just text -->
+    <span style="color: var(--muted);">
+      <span><%= assign.job.address?.label %> - </span>
+      <%= assign.job.address?.street %>, 
+      <%= assign.job.address?.city %>, 
+      <%= assign.job.address?.state %> - 
+      <%= assign.job.address?.pincode %>
+    </span>
+  <% } %>
+</p>
+
+
+
+                <h6 class="mt-4 mb-2">Scheduled For</h6>
+                <p class="muted">
+                  <i class="ri-calendar-line me-1"></i>
+                  <%= new Date(assign.job.deadline).toLocaleDateString() %>
+                </p>
+
+                <hr style="border-color: var(--muted);">
+                <div class="d-flex flex-wrap gap-2 action-bar pt-2 justify-content-center">
+                  <form action="/worker/jobs/<%= assign._id %>/status" method="POST">
+                    <input type="hidden" name="status" value="Accepted">
+                    <button class="btn btn-sm btn-accept">Accept Job</button>
+                  </form>
+                 
+                  <form action="/worker/jobs/<%= assign._id %>/status" method="POST">
+                    <input type="hidden" name="status" value="Paused">
+                    <button class="btn btn-sm btn-pause">Pause Job</button>
+                  </form>
+                  <form action="/worker/jobs/<%= assign._id %>/status" method="POST">
+                    <input type="hidden" name="status" value="Completed">
+                    <button class="btn btn-sm btn-complete <%= st==='Completed' ? 'enabled' : '' %>">Complete Job</button>
+                  </form>
+                </div>
+              </div>
+
+             
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div  class="text-center text-secondary py-4">No jobs found</div>
+  <% } %>
+</div>

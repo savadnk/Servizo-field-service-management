@@ -1,0 +1,408 @@
+<div class="container py-4">
+  <h2 class="mb-4">Setting Dashboard</h2>
+
+  <div class="row g-3">
+    <!-- Left Column -->
+    <div class="col-12 col-lg-8 d-flex flex-column gap-3">
+
+      <!-- Profile Panel -->
+      <section class="panel">
+        <div class="panel-header">
+          Agency Profile
+          <div class="subtext">Manage your admin account and business settings.</div>
+        </div>
+        <div class="panel-body">
+
+          <!-- Profile Photo -->
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <img id="profilePreview" src="<%= admin?.profilePhoto || '/images/logo.svg' %>" alt="Profile"
+              class="rounded-circle border" width="72" height="72">
+            <form action="/admin/settings/photo" method="POST" enctype="multipart/form-data"
+              class="d-flex gap-2 flex-wrap">
+              <input type="file" id="profilePhoto" name="profilePhoto" class="form-control form-control-sm"
+                accept="image/*" required>
+              <button type="submit" class="btn btn-sm btn-success">Update Photo</button>
+            </form>
+          </div>
+
+          <hr style="border-color: var(--line);">
+
+          <!-- Personal Info -->
+          <h6 class="mb-2">Personal Information</h6>
+          <form action="/admin/settings/update" method="POST" id="profileForm">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" value="<%= admin?.name || '' %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="<%= admin?.email || '' %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input type="tel" name="phone" class="form-control" value="<%= admin?.phone || '' %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Role</label>
+                <input type="text" class="form-control" value="<%= admin?.role || 'Admin' %>" readonly>
+              </div>
+            </div>
+
+            <hr style="border-color: var(--line);">
+
+            <!-- Business Info -->
+            <h6 class="mb-2">Business Information</h6>
+            <div class="mb-3">
+              <label class="form-label">Company Name</label>
+              <input type="text" name="companyName" class="form-control" value="<%= admin?.companyName || '' %>"
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Services Offered</label>
+              <input type="text" id="serviceInput" class="form-control" list="servicesList"
+                placeholder="Select a service">
+              <datalist id="servicesList">
+                <% AVAILABLE_SERVICES.forEach(service=> { %>
+                  <option value="<%= service %>"></option>
+                  <% }) %>
+              </datalist>
+              <div id="selectedServices" class="d-flex flex-wrap gap-2 mt-2">
+                <% if(admin?.servicesOffered){ admin.servicesOffered.forEach(service=> { %>
+                  <input type="hidden" name="servicesOffered" value="<%= service %>">
+                  <span class="badge bg-success rounded-pill px-3 py-2 d-flex align-items-center">
+                    <%= service %>
+                      <button type="button" class="btn-close btn-close-white ms-2"
+                        data-service="<%= service %>"></button>
+                  </span>
+                  <% }) } %>
+              </div>
+              <div class="form-text text-secondary">Select services from the list. Already chosen services appear below.
+              </div>
+            </div>
+
+            <div class="text-end mt-3">
+              <button type="submit" class="btn btn-success">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: Password -->
+    <div class="col-12 col-lg-4">
+      <section class="panel h-100">
+        <div class="panel-header">
+          Security Settings
+          <div class="subtext">Update your password to keep your account safe.</div>
+        </div>
+
+        <div class="panel-body">
+          <form action="/admin/settings/password" method="POST" id="passwordForm">
+            <div class="mb-3">
+              <input type="password" name="currentPassword" id="currentPassword" class="form-control"
+                placeholder="Current Password" required>
+            </div>
+            <div class="mb-3">
+              <input type="password" name="newPassword" id="newPassword" class="form-control" placeholder="New Password"
+                minlength="8" required>
+            </div>
+            <div class="mb-3">
+              <input type="password" name="confirmNewPassword" id="confirmNewPassword" class="form-control"
+                placeholder="Confirm New Password" required>
+            </div>
+            <button type="submit" id="pwdBtn" class="btn btn-success w-100">Change Password</button>
+            <div class="text-success mt-2 small" id="pwdSaved"></div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+
+
+
+<style>
+  body {
+    background: var(--bg);
+    color: var(--txt);
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+  }
+
+  .panel-header {
+    padding: 12px 14px;
+    background: var(--row);
+    border-bottom: 1px solid var(--line);
+    border-radius: 12px 12px 0 0;
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  .panel-body {
+    padding: 16px;
+  }
+
+  .subtext {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .form-control,
+  .form-select {
+    background: var(--row);
+    border: 1px solid var(--line);
+    color: var(--txt);
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 .2rem rgba(22, 218, 100, .15);
+  }
+
+  .btn-success {
+    background: rgba(34, 197, 94, .18);
+    color: var(--green);
+    border: 1px solid rgba(34, 197, 94, .35);
+  }
+
+  .btn-success:hover {
+    background: rgba(34, 197, 94, .28);
+  }
+
+  .btn-primary {
+    background: #1f2634;
+    border: 1px solid #2b3b58;
+    color: #dbe7ff;
+  }
+
+  .btn-primary:hover {
+    background: #263149;
+  }
+
+  .badge.bg-success {
+    background: rgba(34, 197, 94, .18) !important;
+    color: var(--green);
+    border: 1px solid rgba(34, 197, 94, .35);
+  }
+
+  .btn-close-white {
+    filter: invert(1);
+  }
+</style>
+
+
+<script>
+
+  const params = new URLSearchParams(location.search);
+  const success = params.get('success');
+  const error = params.get('error');
+
+
+  if (success) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: success,
+      confirmButtonText: 'OK',
+      timer: 1800,
+      timerProgressBar: true
+    }); // docs examples use icon/title/text options. [web:66]
+  } else if (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error,
+      confirmButtonText: 'OK'
+    }); // standard error modal pattern. [web:66]
+  }
+
+  // Preview selected profile photo
+  const fileInput = document.getElementById('profilePhoto');
+  const previewImg = document.getElementById('profilePreview');
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      if (!f.type.startsWith('image/')) {
+        e.target.value = '';
+        return alert('Please select an image file.');
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => previewImg.src = ev.target.result;
+      reader.readAsDataURL(f);
+    });
+  }
+
+  // Bootstrap-like custom validation
+  function enhanceValidation(form, onOk) {
+    form.addEventListener('submit', (e) => {
+      // basic HTML5 validity
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+        [...form.querySelectorAll(':invalid')][0]?.focus();
+      } else {
+        onOk?.();
+      }
+      form.classList.add('was-validated');
+    });
+  }
+
+  // Normalize services to comma+space
+  const serviceInput = document.getElementById('serviceInput');
+  const selectedServices = document.getElementById('selectedServices');
+  const profileForm = document.getElementById('profileForm');
+
+
+  serviceInput.addEventListener('change', function () {
+    const service = this.value.trim();
+    if (!service) return;
+
+    // Only allow values from AVAILABLE_SERVICES
+    const available = [...document.querySelectorAll('#servicesList option')].map(o => o.value);
+    if (!available.includes(service)) {
+      this.value = '';
+      return;
+    }
+
+    // Prevent duplicates
+    if ([...profileForm.querySelectorAll('input[name="servicesOffered"]')]
+      .some(input => input.value.toLowerCase() === service.toLowerCase())) {
+      this.value = '';
+      return;
+    }
+
+    // Create hidden input for submission
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'servicesOffered';
+    hiddenInput.value = service;
+
+    profileForm.appendChild(hiddenInput); // <-- append directly to form
+
+    // Badge for display
+    const badge = document.createElement('span');
+    badge.className = 'badge bg-success rounded-pill px-3 py-2 d-flex align-items-center';
+    badge.innerHTML = `
+    ${service}
+    <button type="button" class="btn-close btn-close-white ms-2" data-service="${service}"></button>
+  `;
+
+    selectedServices.appendChild(badge);
+    this.value = '';
+  });
+
+  // Remove service on close click
+  selectedServices.addEventListener('click', function (e) {
+    if (e.target.classList.contains('btn-close')) {
+      const badge = e.target.closest('span');
+      const value = badge.textContent.trim();
+
+      // Remove hidden input from form
+      const hiddenInput = profileForm.querySelector(`input[name="servicesOffered"][value="${value}"]`);
+      if (hiddenInput) hiddenInput.remove();
+
+      badge.remove();
+    }
+  });
+
+
+  // Password matching
+  const newPwd = document.getElementById('newPassword');
+  const confirmPwd = document.getElementById('confirmNewPassword');
+  
+  function checkMatch() {
+    if (confirmPwd.value && newPwd.value !== confirmPwd.value) {
+      confirmPwd.setCustomValidity('Passwords do not match');
+    } else {
+      confirmPwd.setCustomValidity('');
+    }
+  }
+  newPwd?.addEventListener('input', checkMatch);
+  confirmPwd?.addEventListener('input', checkMatch);
+
+ 
+
+
+  // document.getElementById("connectRazorpay")?.addEventListener("click", async () => {
+  //   try {
+  //     const res = await fetch("/admin/payment/create-subaccount", { method: "POST" });
+  //     const data = await res.json();
+  //     alert(data.message);
+  //     if (data.success) location.reload();
+  //   } catch (err) {
+  //     alert("Error connecting Razorpay");
+  //   }
+  // });
+</script>
+
+<!-- <div class="mb-3">
+    <label class="form-label">PAN Number</label>
+    <input type="text" name="panNumber" class="form-control" 
+           value="<%= admin?.panNumber || '' %>" 
+           pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" 
+           placeholder="AAACL1234C" required>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Business Address</label>
+    <input type="text" name="street1" class="form-control" 
+           placeholder="Street Address" required>
+</div> -->
+
+<!-- ✅ Bank Details Section -->
+<!-- <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Bank Details</h5>
+    </div>
+    <div class="card-body">
+      <% if (admin.bankAccountNumber && admin.ifscCode) { %>
+        <p><strong>Account Number:</strong> <%= admin.bankAccountNumber %></p>
+        <p><strong>IFSC Code:</strong> <%= admin.ifscCode %></p>
+        <a href="#" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editForm">Edit</a>
+      <% } else { %>
+        <p class="text-muted">Bank details not added yet.</p>
+      <% } %>
+
+      <div id="editForm" class="<%= admin.bankAccountNumber ? 'collapse mt-3' : '' %>">
+        <form action="/admin/settings/bank" method="POST">
+          <div class="mb-3">
+            <label class="form-label">Bank Account Number</label>
+            <input type="text" name="bankAccountNumber" class="form-control" required value="<%= admin.bankAccountNumber || '' %>">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">IFSC Code</label>
+            <input type="text" name="ifscCode" class="form-control" required value="<%= admin.ifscCode || '' %>">
+          </div>
+          <button type="submit" class="btn btn-success">Save Bank Details</button>
+        </form>
+      </div>
+    </div>
+  </div> -->
+
+<!-- 💳 Razorpay Connection Section -->
+<!-- <div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">Razorpay Connection</h5>
+    </div>
+    <div class="card-body text-center">
+      <% if (admin.isRazorpayOnboarded) { %>
+        <p class="text-success fw-bold">✅ Connected with Razorpay</p>
+        <p><strong>Account ID:</strong> <%= admin.razorpayAccountId %></p>
+      <% } else if (admin.bankAccountNumber && admin.ifscCode) { %>
+        <button id="connectRazorpay" class="btn btn-primary">Connect Razorpay</button>
+      <% } else { %>
+        <p class="text-muted">Add bank details to enable Razorpay connection.</p>
+      <% } %>
+    </div>
+  </div>
+</div> -->

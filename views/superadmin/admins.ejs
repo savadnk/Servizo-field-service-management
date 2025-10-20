@@ -1,0 +1,219 @@
+<div class="container py-4 ">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-white mb-2">Agency Management</h2>
+            <p class="text-secondary mb-0">Manage agencies, verify accounts, and track revenue.</p>
+        </div>
+        <!-- Optional: Add a "Add New Agency" button here if needed -->
+    </div>
+
+    <div class="table-responsive py-3 rounded-4 shadow-sm  scrollable-table ">
+        <table class="table table-hover   align-middle my-table mb-0 ">
+            <thead class="table-secondary sticky-top border-bottom">
+                <tr class="border-bottom">
+                    <th>#</th>
+                    <th scope="col">Agency ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Services</th>
+                    <th scope="col">Verified</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Workers</th>
+                    <th scope="col">Requests</th>
+                    <th scope="col">Revenue</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="">
+                <% if (agencies.length===0) { %>
+                    
+                    <tr>
+                        <td colspan="11" class="text-center text-muted py-4">
+                            <i class="bi bi-search me-2"></i> No agencies found
+                        </td>
+                    </tr>
+                    <% } else { %>
+                        <% agencies.forEach((agency, i)=> { %>
+                            <tr class="hover-effect">
+                                <td><%= i + 1 %></td>
+                                <td class="fw-medium">
+                                    <%= agency.shortId %>
+                                </td>
+                                <td>
+                                    <%= agency.name %>
+                                </td>
+                                <td>
+                                    <%= agency.email %>
+                                </td>
+                                <td>
+                                    <%= agency.companyName || "N/A" %>
+                                </td>
+                                <!-- <td>
+                                    <% if (agency.servicesOffered && agency.servicesOffered.length) { %>
+                                        <span class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">
+                                            <%= agency.servicesOffered %>
+                  </span>
+                <% } else { %>
+                  <span class="">N/A</span>
+                <% } %>
+              </td> -->
+              <td>
+  <% if (agency.servicesOffered && agency.servicesOffered.length) { %>
+    <% agency.servicesOffered.forEach(svc => { %>
+      <span class="badge bg-primary-subtle text-primary rounded-pill px-2 py-1 d-inline-block mb-1"><%= svc %></span><br>
+    <% }) %>
+  <% } else { %>
+    <span>N/A</span>
+  <% } %>
+</td>
+
+              <td>
+                <% if (agency.verified) { %>
+                  <span class=" badge bg-success-subtle text-success rounded-pill px-3 py-1">Verified
+                                        </span>
+                                        <% } else { %>
+                                            <span
+                                                class="badge bg-danger-subtle text-danger rounded-pill px-3 py-1">Unverified</span>
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <% if (agency.status==="Active" ) { %>
+                                        <span
+                                            class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Active</span>
+                                        <% } else if (agency.status==="Blocked" ) { %>
+                                            <span
+                                                class="badge bg-danger-subtle text-danger rounded-pill px-3 py-1">Blocked</span>
+                                            <% } else { %>
+                                                <span
+                                                    class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1">
+                                                    <%= agency.status %>
+                                                </span>
+                                                <% } %>
+                                </td>
+                                <td class="text-success fw-bold">
+                                    <%= agency.totalWorkers %>
+                                </td>
+                                <td>
+                                    <%= agency.totalRequests %>
+                                </td>
+                                <td class="text-success fw-bold">$<%= agency.totalRevenue.toLocaleString() %>
+                                </td>
+                                <td>
+                                    <!-- Approve Form -->
+                                    <form action="/superadmin/admins/<%= agency.id %>/approve" method="POST"
+                                        class="mb-2 ">
+                                        <button type="submit" class="btn btn-sm btn-outline-success me-1"
+                                            title="Approve Agency">
+                                            <i class="bi bi-check-circle"></i> Approve
+                                        </button>
+                                    </form>
+
+                                    <!-- Block Form -->
+                                    <form action="/superadmin/admins/<%= agency.id %>/block" method="POST">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger me-1"
+                                            title="Block Agency">
+                                            <i class="bi bi-x-circle"></i> Block
+                                        </button>
+                                    </form>
+
+
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        /* border-top: none !important; */
+        font-weight: 600;
+        color: #e9ecef;
+        background-color: #151821 !important;
+    }
+
+
+
+    .table td,
+    .table th {
+        /* border-top: none !important; */
+        color: #e9ecef;
+        vertical-align: middle;
+        padding: .75rem 0.5rem;
+        background-color: #151821 !important;
+    }
+
+    .hover-effect:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table-responsive {
+        border-radius: 1rem;
+        overflow: hidden;
+        background-color: #151821;
+    }
+
+    .btn-outline-success,
+    .btn-outline-danger,
+    .btn-outline-primary {
+        transition: all 0.2s ease;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #198754;
+        color: white;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Target the scrollable div */
+    .scrollable-table {
+        max-height: 400px;
+        max-width: 100%;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    /* Scrollbar width */
+    .scrollable-table::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    /* Track (background of scrollbar) */
+    .scrollable-table::-webkit-scrollbar-track {
+        background: #797979;
+        /* light gray */
+        border-radius: 5px;
+    }
+
+    /* Thumb (draggable handle) */
+    .scrollable-table::-webkit-scrollbar-thumb {
+        background: #16da64;
+        /* Bootstrap blue */
+        border-radius: 5px;
+    }
+
+    /* Thumb on hover */
+    .scrollable-table::-webkit-scrollbar-thumb:hover {
+        background: #0fac4e;
+        /* darker blue */
+    }
+</style>

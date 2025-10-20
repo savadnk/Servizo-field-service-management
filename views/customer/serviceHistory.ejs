@@ -1,0 +1,209 @@
+
+
+
+<style>
+ 
+  body{ background: var(--bg); }
+
+  .history-title{ color: var(--txt); }
+
+  .table-wrap{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  }
+
+
+
+   .table-container {
+    max-height: 500px;
+    /* scroll limit */
+    overflow-y: auto;
+    display: block;
+  }
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .table thead th{
+    font-weight: 600;
+    color: var(--text-100);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+    padding: 10px;
+    text-align: center;
+     position: sticky;
+    top: 0;
+    background: #191c24;
+    /* match your header color */
+    z-index: 2;
+  }
+
+  .table tbody td{
+    color: var(--txt);
+    vertical-align: middle;
+    border-color: var(--line);
+    padding: 10px;
+    background: var(--panel);
+    text-align: center;
+  }
+
+  /* Give the Actions column more space */
+  .table th:last-child,
+  .table td:last-child {
+    width: 25%;
+    text-align: left; /* Align the form to the left within its cell */
+  }
+
+  
+  /* Works in Chrome, Edge, Safari */
+  .table-container::-webkit-scrollbar {
+    width: 10px;
+    /* scrollbar width */
+  }
+
+  .table-container::-webkit-scrollbar-track {
+    background: var(--panel);
+    /* track background */
+    border-radius: 12px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+    background: #444b5e;
+    /* thumb color */
+    border-radius: 12px;
+    border: 2px solid var(--panel);
+    /* spacing effect */
+  }
+
+  .table-container::-webkit-scrollbar-thumb:hover {
+    background: #5a637a;
+    /* hover color */
+  }
+
+  /* Firefox */
+  .table-container {
+    scrollbar-width: thin;
+    /* "auto" | "thin" */
+    scrollbar-color: #444b5e var(--panel);
+    /* thumb | track */
+  }
+
+
+
+  .badge-rating{
+    background: rgba(34,197,94,.15);
+    color: var(--green);
+    border: 1px solid rgba(34,197,94,.35);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+ 
+  .btn-feedback:hover{ background: rgba(34,197,94,.28); }
+
+  .rating-select{
+    background: var(--row);
+    color: var(--txt);
+    border: 1px solid var(--line);
+  }
+
+  .rating-select {
+  background: var(--row);
+  color: var(--txt);
+  border: 1px solid var(--line);
+  padding: 4px 6px;
+  font-size: 0.85rem;
+  width: 70px;
+}
+
+.btn-feedback {
+  background: rgba(34,197,94,.18);
+  color: var(--green);
+  border: 1px solid rgba(34,197,94,.35);
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Give the Actions column more space */
+.table th:last-child,
+.table td:last-child {
+ width: 10%; 
+ text-align: left;
+}
+
+</style>
+
+<div class="container my-4">
+  <h2 class="history-title mb-3">Service History</h2>
+
+   <form method="get" action="/customer/history" class="mb-3">
+    <!-- Status filter -->
+    <select name="filter"
+      class="form-select form-select bg-black text-light rounded-pill border-1 border-dark px-4 py-2 fs-6 w-auto"
+      onchange="this.form.submit()">
+       <option value="all" <%= selectedFilter === "all" ? "selected" : "" %>>All</option>
+      <option value="rate" <%= selectedFilter === "rate" ? "selected" : "" %>>Rated</option>
+      <option value="unrate" <%= selectedFilter === "unrate" ? "selected" : "" %>>Unrated</option>
+    </select>
+  </form>
+
+  <div class="table-wrap">
+    <div class="table-container px-2">
+      <table class="table   custom align-middle ">
+        <thead class="table-head border-bottom "  style="border-color: var(--line); color: var(--text-100);  ">
+          <tr >
+            <th>Job ID</th>
+            <th>Service Type</th>
+            <th>Date Completed</th>
+            <th>Agency</th>
+            <th>Assigned Worker</th>
+            <th>Actions</th>
+          </tr> 
+        </thead>
+        <tbody >
+          <% jobs.forEach((job) => { 
+               const assignment = assignmentMap[job._id];
+               const feedback = feedbackMap[job._id];
+          %>
+          <tr>
+            <td><%= job.shortId  %></td>
+            <td><%= job.serviceType %></td>
+            <td><%= new Date(job.deadline).toISOString().slice(0,10) %></td>
+            <td><%= job.admin?.companyName || "N/A" %></td>
+            <td><%= assignment?.worker?.name || "Not Assigned" %></td>
+            <td class="">
+              <% if (feedback) { %>
+                <span class="badge-rating">⭐ <%= feedback.rating %></span>
+              <% } else { %>
+                <form action="/customer/history/feedback" method="POST" class="d-inline-flex align-items-center gap-2">
+                  <input type="hidden" name="jobId" value="<%= job._id %>">
+                  <input type="hidden" name="workerId" value="<%= assignment?.worker?._id %>">
+
+                  <select name="rating" class="form-select form-select-sm rating-select" required>
+                    <option value="">Rate</option>
+                    <option value="1">⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                  </select>
+                  <button type="submit" class="btn btn-sm btn-feedback">Feedback</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

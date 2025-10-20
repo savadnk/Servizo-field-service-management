@@ -1,0 +1,168 @@
+
+<style>
+  :root { --bg:#000000;  --muted:#8b93a7; --green:#22c55e; --green-dim:#16a34a; --chip:#203124;  --surface:#111418; }
+  body { background: var(--bg); }
+  .page-wrap { padding: 24px; }
+  .title-row { gap: 12px; }
+  .btn-green { background: var(--green); border: none; color: #061009; }
+  .btn-green:hover { background: var(--green-dim); color: #031b0c; }
+
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-top: 18px; }
+  @media (max-width: 1199px){ .grid { grid-template-columns: repeat(8,1fr); } }
+  @media (max-width: 767px){ .grid { grid-template-columns: repeat(4,1fr); } }
+
+  .card-w { grid-column: span 4; background: var(--card); border: 1px solid #232733; border-radius: 16px; padding: 16px; color: #e6e9f0; position: relative; }
+  .head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+  .avatar { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; background: #0e1116; display: grid; place-items: center; border: 1px solid #2a2f3a; }
+  .name { font-weight: 600; }
+  .subtle { color: var(--muted); font-size: 0.875rem; }
+  .status-pill { position: absolute; right: 12px; top: 12px; padding: 6px 10px; border-radius: 999px; font-size: 0.8rem; border: 1px solid #284430; }
+  .pill-available { background: #13271a; color: #9ff2c1; }
+  .pill-onjob { background: #1a2637; color: #a7c4ff; border-color: #2b3e62; }
+  .pill-offline { background: #2a1b1b; color: #f2b3b3; border-color: #4a2b2b; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+  .chip { background: var(--chip); border: 1px solid var(--chip-border); color: #b9f6cf; padding: 6px 10px; border-radius: 999px; font-size: 0.8rem; }
+  .meta { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #232733; padding-top: 12px; margin-top: 8px; }
+  .badge-count { background: #16202b; color: #b8d8ff; padding: 6px 10px; border-radius: 8px; }
+  .badge-done { background: #13271a; color: #9ff2c1; }
+  .switch form { display: inline-block; }
+  .form-switch .form-check-input { width: 44px; height: 22px; background-color: #2a2f3a; border: 1px solid #374151; }
+  .form-switch .form-check-input:checked { background-color: var(--green); border-color: var(--green); }
+  .form-control{ background-color:#4d4f55; border: 0;}
+</style>
+
+<div class="page-wrap container-fluid">
+  <div class="d-flex justify-content-between align-items-center title-row mb-3">
+  <h2 class="m-0 text-light">Worker Management</h2>
+
+  <div class="d-flex align-items-center gap-3">
+    <!-- 🧠 Worker Availability Filter -->
+    <form method="get" action="/admin/workers" class="m-0">
+      <select
+        name="filter"
+        class="form-select bg-black text-light rounded-pill border-1 border-dark px-4 py-2 w-auto"
+        onchange="this.form.submit()"
+      >
+        <option value="All" <%= filter === 'All' ? 'selected' : '' %>>All Workers</option>
+        <option value="Available" <%= filter === 'Available' ? 'selected' : '' %>>Available</option>
+        <option value="Offline" <%= filter === 'Offline' ? 'selected' : '' %>>Offline</option>
+      </select>
+    </form>
+
+    <!-- ➕ Add Worker Button -->
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addWorkerModal">
+      <i class="ri-user-add-line me-1"></i> Add New Worker
+    </button>
+  </div>
+</div>
+
+
+  <% if (workers && workers.length) { %>
+    <div class="grid">
+      <% workers.forEach(w => { %>
+        <div class="card-w">
+          <div class="status-pill
+            <%= w.availability ? 'pill-available' : (w.status === 'Active' ? 'pill-onjob' : 'pill-offline') %>">
+            <%= w.availability ? 'Available' : 'Offline' %>
+          </div>
+
+          <div class="head">
+            <div class="avatar">
+              <% if (w.profilePhoto) { %>
+                <img src="<%= w.profilePhoto %>" alt="Profile" width="48" height="48">
+              <% } else { %>
+                <i class="ri-user-3-fill fs-4 text-secondary"></i>
+              <% } %>
+            </div>
+            <div>
+              <div class="name"><%= w.name %></div>
+              <div class="subtle"><%= w.email %></div>
+            </div>
+          </div>
+
+          <div class="chips">
+            <% if (w.skills && w.skills.length) { %>
+              <% w.skills.forEach(s => { %>
+                <span class="chip"><%= s %></span>
+              <% }) %>
+            <% } else { %>
+              <span class="subtle">No skills</span>
+            <% } %>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="ri-star-fill text-warning"></i>
+            <span class="subtle"><%= w.rating || 0 %></span>
+          </div>
+
+          <div class="meta">
+            <div class="d-flex gap-2">
+              <span class="badge-count"><%= w.activeJobCount  || 0 %> Active</span>
+              <span class="badge-count badge-done"><%= w.completedJobs || 0 %> Done</span>
+            </div>
+           
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="text-center text-secondary py-5">No workers found</div>
+  <% } %>
+</div>
+
+<!-- Add Worker Modal -->
+<div class="modal fade" id="addWorkerModal" tabindex="-1" aria-labelledby="addWorkerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background:#0f1318; color:#e6e9f0; border:1px solid #283041;">
+      <div class="modal-header" style="border-color:#283041;">
+        <h5 class="modal-title" id="addWorkerModalLabel">Add New Worker</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="/admin/workers/add" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="text" name="phone" class="form-control" required>
+          </div>
+         
+        </div>
+        <div class="modal-footer" style="border-color:#283041;">
+          <button type="submit" class="btn btn-green">Add Worker</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+      const params = new URLSearchParams(location.search);
+        const success = params.get('success');
+        const error = params.get('error');
+       
+
+        if (success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: success,
+                confirmButtonText: 'OK',
+                timer: 1800,
+                timerProgressBar: true
+            }); // docs examples use icon/title/text options. [web:66]
+        } else if (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error,
+                confirmButtonText: 'OK'
+            }); // standard error modal pattern. [web:66]
+        }
+</script>

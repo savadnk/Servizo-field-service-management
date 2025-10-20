@@ -1,0 +1,167 @@
+<div class="container mt-4">
+  <h2 class="text-white mb-4">Create New Job</h2>
+
+  <form action="/admin/jobs/create" method="POST" class="p-4 rounded shadow-sm mb-4" style="background-color: var(--panel);">
+
+    <!-- Customer -->
+    <div class="mb-3">
+      <label class="form-label text-white">Customer</label>
+      <select name="customer" id="customerSelect" class="form-select" style="background-color: var(--row); color: var(--text-300);" required>
+        <option value="">Select Customer</option>
+        <option value="<%= user.id %>">Self</option>
+        <% customers.forEach(c => { %>
+          <option value="<%= c._id %>"><%= c.name %> - <%= c.phone %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <!-- Address Selection -->
+    <div class="mb-3">
+      <label class="form-label text-white">Address</label>
+      <select name="address" id="addressSelect" class="form-select" style="background-color: var(--row); color: var(--text-300);" >
+        <option value="">Select Address</option>
+
+        <% addresses.forEach(addr => { %>
+          <option value="<%= addr._id %>">
+            <%= addr.label || addr.street %>, <%= addr.city %> (<%= addr.pincode %>)
+          </option>
+        <% }) %>
+      </select>
+      <button type="button" id="addAddressBtn" class="btn btn-sm text-light mt-2" style="background-color: var(--green);">+ Add New Address</button>
+    </div>
+
+    <!-- Add New Address Section (Hidden by default) -->
+    <div id="newAddressSection" style="display:none; border:1px solid #555; padding:15px; border-radius:8px; margin-bottom:20px;">
+      <h5 class="text-white">Add New Address</h5>
+
+      <div class="mb-3">
+        <label class="form-label text-white">Label (Home / Office)</label>
+        <input type="text" name="newLabel" id="newLabel" class="form-control"  style="background-color: var(--row); color: var(--text-300);">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-white">Pick Location on Map</label>
+        <div id="mapAddress" class="rounded" style="height: 250px; width: 100%; margin-bottom:10px;"></div>
+        <input type="hidden" name="newLatitude" id="newLatitude">
+        <input type="hidden" name="newLongitude" id="newLongitude">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-white">Street</label>
+        <input type="text" name="newStreet" class="form-control"  style="background-color: var(--row); color: var(--text-300);">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-white">City</label>
+        <input type="text" name="newCity" class="form-control"  style="background-color: var(--row); color: var(--text-300);">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-white">State</label>
+        <input type="text" name="newState" class="form-control"  style="background-color: var(--row); color: var(--text-300);">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-white">Pincode</label>
+        <input type="text" name="newPincode" class="form-control"  style="background-color: var(--row); color: var(--text-300);">
+      </div>
+    </div>
+
+    <!-- Service Type Dropdown -->
+    <div class="mb-3">
+      <label class="form-label text-white">Service Type</label>
+      <select name="serviceType" class="form-select" style="background-color: var(--row); color: var(--text-300);" required>
+        <option value="">Select Service</option>
+        <% services.forEach(service => { %>
+          <option value="<%= service %>"><%= service %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label class="form-label text-white">Description</label>
+      <textarea name="description" class="form-control"  style="background-color: var(--row); color: var(--text-300);" rows="3" required></textarea>
+    </div>
+
+    <!-- Deadline -->
+    <div class="mb-3">
+      <label class="form-label text-white">Deadline</label>
+      <input type="datetime-local" name="deadline" class="form-control"  style="background-color: var(--row); color: var(--text-300);" required>
+    </div>
+
+    <button type="submit" class="btn btn-success"><i class="ri-save-line me-1"></i> Save Job</button>
+    <a href="/admin/jobs" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+
+
+<!-- ✅ Leaflet Map & Search Plugins -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+<script>
+  const addAddressBtn = document.getElementById('addAddressBtn');
+  const newAddressSection = document.getElementById('newAddressSection');
+  const addressSelect = document.getElementById('addressSelect');
+
+  const jobForm = document.querySelector('form');
+
+jobForm.addEventListener('submit', function(e) {
+  const newAddressVisible = newAddressSection.style.display === 'block';
+  if (newAddressVisible) {
+    // Temporarily remove required from select if adding new address
+    addressSelect.removeAttribute('required');
+  } else {
+    // Ensure select is required if not adding new address
+    addressSelect.setAttribute('required', 'required');
+  }
+});
+
+
+addAddressBtn.addEventListener('click', () => {
+  const isHidden = newAddressSection.style.display === 'none';
+  newAddressSection.style.display = isHidden ? 'block' : 'none';
+
+  // If adding new, clear the selection
+  if (isHidden) {
+    addressSelect.value = "";
+
+    // Give Leaflet a tiny delay to recalc size
+    setTimeout(() => {
+      mapAddress.invalidateSize();
+    }, 100);
+  }
+});
+
+
+  // Leaflet map for new address
+  const mapAddress = L.map('mapAddress').setView([10.8505, 76.2711], 8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(mapAddress);
+
+  let markerAddress;
+  mapAddress.on('click', function(e) {
+    const { lat, lng } = e.latlng;
+    if(markerAddress) mapAddress.removeLayer(markerAddress);
+    markerAddress = L.marker([lat, lng]).addTo(mapAddress);
+    document.getElementById('newLatitude').value = lat.toFixed(6);
+    document.getElementById('newLongitude').value = lng.toFixed(6);
+  });
+
+  // Geocoder for new address map
+  L.Control.geocoder({
+    defaultMarkGeocode: false
+  }).on('markgeocode', function(e){
+    const { center } = e.geocode;
+    mapAddress.setView(center, 15);
+    if(markerAddress) mapAddress.removeLayer(markerAddress);
+    markerAddress = L.marker(center).addTo(mapAddress);
+    document.getElementById('newLatitude').value = center.lat.toFixed(6);
+    document.getElementById('newLongitude').value = center.lng.toFixed(6);
+  }).addTo(mapAddress);
+</script>

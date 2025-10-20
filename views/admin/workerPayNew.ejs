@@ -1,0 +1,177 @@
+<!-- ✅ Bootstrap only for layout -->
+
+
+<style>
+  :root {
+    --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+    --chip:#222733; --chipText:#d8deea; --green:#22c55e; --card:#151821;
+    --txt:#e8ecf4; --grey:#4b5563;
+    --text-100:#e8f1ee; --text-300:#a7b0ad; --muted-600:#4d4f55;
+    --muted-500:#5a5c62; --brand-500:#16da64; --brand-600:#12b754;
+    --chip-border:#284430; --green-dim:#16a34a; --surface:#111418;
+  }
+
+  body { background: var(--bg); color: var(--txt); }
+
+  .pay-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 12px 28px var(--bg);
+    padding: 16px;
+    max-width: 600px;
+    margin: 24px auto;
+  }
+  .pay-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .pay-title { margin: 0; color: var(--text-100); font-weight: 800; }
+
+  .form-label { color: var(--text-300); font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+  .form-control, .form-select {
+    background: var(--row);
+    color: var(--txt);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--brand-500);
+    box-shadow: 0 0 0 .15rem rgba(22,218,100,.15);
+    background: var(--row);
+    color: var(--txt);
+  }
+
+  .summary-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--row);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .summary-left { color: var(--muted); font-size: 12px; }
+  .summary-right { color: var(--txt); font-weight: 700; }
+
+  .btn-pay {
+    width: 100%;
+    background: var(--brand-600);
+    border: 1px solid var(--chip-border);
+    color: var(--text-100);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .btn-pay:hover { background: var(--green-dim); }
+
+  .meta { color: var(--muted); font-size: 12px; text-align: center; margin-top: 6px; }
+</style>
+
+<div class="container mt-4">
+  <div class="pay-card mt-5">
+    <div class="pay-head">
+      <h5 class="pay-title mx-auto pb-2">Pay Worker</h5>
+    </div>
+
+    <form id="workerPayForm">
+      <input type="hidden" name="jobId" value="<%= job._id %>">
+      <input type="hidden" name="workerId" value="<%= assignment.worker._id %>">
+
+      <div class="summary-row">
+        <div class="summary-left">Job Title Service</div>
+        <div class="summary-right"><%= job.serviceType %></div>
+      </div>
+
+      <div class="summary-row">
+        <div class="summary-left">Worker</div>
+        <div class="summary-right"><%= assignment.worker.name %> (<%= assignment.worker.email %>)</div>
+      </div>
+
+      <div class="summary-row">
+        <div class="summary-left">Service Amount (₹)</div>
+        <div class="summary-right">₹<%= invoice.serviceAmount.toFixed(2) %></div>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Worker Share (70%)</label>
+        <input type="number" name="amount" id="amount" class="form-control" value="<%= workerAmount.toFixed(2) %>" required>
+      </div>
+
+      <button type="submit" class="btn-pay">
+        <i class="bi bi-cash-coin me-1"></i> Confirm & Pay
+      </button>
+
+      <div class="meta">Payment via Razorpay</div>
+    </form>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById("workerPayForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const jobId = document.querySelector("[name='jobId']").value;
+  const workerId = document.querySelector("[name='workerId']").value;
+  const amount = document.getElementById("amount").value;
+
+  // Helper to show SweetAlert message
+  const showSwal = (icon, title, text, redirect = false) => {
+    Swal.fire({
+      icon: icon,
+      title: title,
+      text: text,
+      background: getComputedStyle(document.documentElement).getPropertyValue('--panel').trim(),
+      color: getComputedStyle(document.documentElement).getPropertyValue('--txt').trim(),
+      confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--brand-600').trim(),
+      customClass: { popup: 'rounded-4' }
+    }).then(() => {
+      if (redirect) window.location.href = "/admin/invoices";
+    });
+  };
+
+  try {
+    const res = await fetch("/admin/worker/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount, jobId, workerId }),
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      return showSwal("error", "Payment Error", "Failed to start payment. Please try again.");
+    }
+
+    const options = {
+      key: data.key,
+      amount: data.amount * 100,
+      currency: "INR",
+      name: "Worker Payment",
+      description: "Paying Worker for Completed Job",
+      order_id: data.orderId,
+      handler: async function (response) {
+        const verifyRes = await fetch("/admin/invoices/worker/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...response, jobId, workerId, amount }),
+        });
+
+        if (verifyRes.ok) {
+          showSwal("success", "Payment Successful", "Worker has been paid successfully!", true);
+        } else {
+          showSwal("warning", "Verification Failed", "Payment verification failed. Please contact support.");
+        }
+      },
+      theme: {
+        color: getComputedStyle(document.documentElement).getPropertyValue('--brand-600').trim()
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch (err) {
+    showSwal("error", "Error", "Something went wrong: " + err.message);
+  }
+});
+</script>

@@ -1,0 +1,121 @@
+body {
+  background-color: #000000;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  /* font-family: Arial, sans-serif; */
+
+}
+
+.sidebar {
+  background-color: #101010 !important;
+
+  width: 15rem; 
+  transition: transform 0.3s ease-in-out;
+}
+
+.offcanvas-lg.offcanvas-start {
+  background-color: #0f0f0f;
+ 
+}
+
+.sidebar h2{
+  color: #16da64;
+}
+
+.nav-link.active {
+  background-color: #151821;
+  border-radius: 5px;
+}
+
+.sidebar .nav-item{
+  padding: 0.4rem 0rem;
+}
+
+header .btn{
+  background-color: #151821;
+  color: white;
+}
+
+header .btn:hover{
+  background-color: #17181d;
+ 
+}
+
+.header {
+  border-bottom: 2px solid #151821;
+    box-shadow: 0 9px 12px -15px #16da64;
+}
+/* .header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;  
+  height: 12px;
+  pointer-events: none;
+  box-shadow: 0 8px 12px -8px rgb(255, 255, 255);
+} */
+
+footer{
+  border-top: 2px solid #151821;
+}
+
+  .card h2,
+  p,
+  i, span {
+    color: #16da64;
+  }
+
+/* Theme to match earlier “Blocked” style  */
+
+  :root{
+    --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+    --chip:#222733; --chipText:#d8deea; --green:#22c55e; --blue:#3b82f6; --card:#151821;
+    --amber:#f59e0b; --cyan:#22d3ee; --danger:#ef4444; --txt:#e8ecf4; --grey:#4b5563;
+     --text-100: #e8f1ee; --text-300: #a7b0ad; --muted-600: #4d4f55; 
+     --muted-500: #5a5c62; --brand-500: #16da64;--brand-600: #12b754; --focus: #86f3b1;
+     --chip-border:#284430; --green-dim:#16a34a; --surface:#111418;
+     
+  }
+
+
+  .swal2-popup{ background:var(--panel)!important; color:#e8ecf4!important; border:1px solid var(--line)!important; border-radius:16px!important; box-shadow:0 6px 24px rgba(0,0,0,0.45)!important; } /* [web:66] */
+  .swal2-title{ color:#e8ecf4!important; } /* [web:66] */
+  .swal2-html-container{ color:var(--muted)!important; } /* [web:66] */
+  .swal2-icon.swal2-success{ border-color:var(--green)!important; color:var(--green)!important; } /* [web:66] */
+  .swal2-icon.swal2-error{ border-color:var(--danger)!important; color:var(--danger)!important; } /* [web:66] */
+  .swal2-styled.swal2-confirm{ background:#1f2634!important; color:#dbe7ff!important; border:1px solid #2b3b58!important; border-radius:999px!important; padding:10px 16px!important; }
+  .swal2-styled.swal2-cancel{ background:#2a2314!important; color:#ffe2b4!important; border:1px solid #3f311c!important; border-radius:999px!important; padding:10px 16px!important; }
+
+
+
+
+/* Sidebar width: fluid and slimmer */
+:root{
+  --sb-min: 11rem;   /* ~176px */
+  --sb-pref: 12.5rem;/* ~200px */
+  --sb-max: 14rem;   /* ~224px */
+}
+
+.sidebar{
+  width: clamp(var(--sb-min), 12vw, var(--sb-pref));
+}
+
+/* Offcanvas behavior on small screens */
+.offcanvas.offcanvas-start{
+  --bs-offcanvas-width: min(85vw, 18rem); /* never overwhelm viewport */
+}
+
+/* Keep fixed sidebar on ≥lg with the slimmer width */
+@media (min-width: 992px){
+  .offcanvas-lg.offcanvas-start{
+    transform: none !important;
+    visibility: visible !important;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+ 
+}
+

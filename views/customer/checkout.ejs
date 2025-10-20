@@ -1,0 +1,72 @@
+<h2>Checkout</h2>
+<p><b>Invoice ID:</b> <%= invoice._id %></p>
+<p><b>Total Amount:</b> ₹<%= invoice.totalAmount %></p>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  const options = {
+    key: "<%= key %>",
+    amount: "<%= order.amount %>",
+    currency: "INR",
+    name: "Field Service Management",
+    description: "Invoice Payment",
+    order_id: "<%= order.id %>",
+
+    handler: function (response) {
+      // On successful payment
+      fetch("/customer/payment/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature,
+          invoiceId: "<%= invoice._id %>",
+          adminId: "<%= invoice.admin._id %>",
+          serviceAmount: <%= invoice.serviceAmount %>,
+          platformFee: <%= invoice.platformFee %>,
+          totalAmount: <%= invoice.totalAmount %>
+        }),
+      })
+      .then(res => res.text())
+      .then(() => {
+        window.location.href = "/customer/invoices?success=Payment Successful"; // redirect after success
+      });
+    },
+
+    prefill: {
+      name: "<%= invoice.customer.name %>",
+      email: "<%= invoice.customer.email %>",
+      contact: "<%= invoice.customer.phone %>",
+    },
+    theme: { color: "#3399cc" },
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+
+
+    const params = new URLSearchParams(location.search);
+  const success = params.get('success');
+  const error = params.get('error');
+
+
+  if (success) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: success,
+      confirmButtonText: 'OK',
+      timer: 1800,
+      timerProgressBar: true
+    }); // docs examples use icon/title/text options. [web:66]
+  } else if (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error,
+      confirmButtonText: 'OK'
+    }); // standard error modal pattern. [web:66]
+  }
+</script>

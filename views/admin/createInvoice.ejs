@@ -1,0 +1,153 @@
+<style>
+  :root{
+    --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+    --chip:#222733; --chipText:#d8deea; --green:#22c55e; --blue:#3b82f6; --card:#151821;
+    --amber:#f59e0b; --cyan:#22d3ee; --danger:#ef4444; --txt:#e8ecf4; --grey:#4b5563;
+    --text-100:#e8f1ee; --text-300:#a7b0ad; --muted-600:#4d4f55;
+    --muted-500:#5a5c62; --brand-500:#16da64; --brand-600:#12b754; --focus:#86f3b1;
+    --chip-border:#284430; --green-dim:#16a34a; --surface:#111418;
+  }
+
+  body{ background: var(--bg); color: var(--txt); }
+
+  .invoice-card{
+    width: 100%;
+    max-width: 600px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 16px;
+  }
+
+  .title{ text-align:center; color: var(--text-100); font-weight: 800; margin-bottom: 8px; }
+  .hint{ text-align:center; color: var(--text-300); font-size: 12px; margin-bottom: 12px; }
+
+  .form-label{ color: var(--text-300); font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+  .form-control, .form-select, textarea{
+    background: var(--row);
+    color: var(--txt);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .form-control::placeholder, textarea::placeholder{ color: var(--muted); }
+  .form-control:focus, .form-select:focus, textarea:focus{
+    border-color: var(--brand-500);
+    box-shadow: 0 0 0 .15rem rgba(22,218,100,.15);
+    background: var(--row);
+    color: var(--txt);
+  }
+
+  .divider{ height:1px; background: var(--line); margin: 8px 0 14px; }
+
+  .btn-submit{
+    background: var(--brand-600);
+    border: 1px solid var(--chip-border);
+    color: var(--text-100);
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .btn-submit:hover{ background: var(--green-dim); }
+
+  .meta{ color: var(--muted); font-size: 12px; }
+  .mb-2x{ margin-bottom: 10px !important; }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height:70vh">
+  <div class="invoice-card mx-auto m-5">
+    <h4 class="title">Create Invoice</h4>
+    <div class="hint">Enter job and billing details</div>
+
+    <form action="/admin/invoices/create" method="POST" id="invoiceForm">
+      <!-- Job Selection -->
+      <div class="mb-2x">
+        <label class="form-label">Select Job</label>
+        <select name="job" id="jobSelect" class="form-select" required>
+          <option value="">-- Select Job --</option>
+          <% jobs.forEach(job => { %>
+            <option
+              value="<%= job._id %>"
+              data-customer-id="<%= job.customer?._id %>"
+              data-customer-name="<%= job.customer?.name %>"
+              data-customer-email="<%= job.customer?.email %>"
+            >
+              <%= job.serviceType %> - (<%= job.customer?.name %>)
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- Customer Auto-filled -->
+      <div class="mb-2x">
+        <label class="form-label">Customer</label>
+        <input type="hidden" name="customer" id="customerId">
+        <input type="text" id="customerName" class="form-control" readonly placeholder="Select a job first"/>
+        <div id="customerEmail" class="meta mt-1"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Service Amount -->
+      <div class="mb-2x">
+        <label class="form-label">Service Amount (₹)</label>
+        <input type="number" step="0.01" min="0" name="serviceAmount" id="serviceAmount"
+               class="form-control" placeholder="Enter the service price" required/>
+      </div>
+
+      <!-- Platform Fee -->
+      <div class="mb-2x">
+        <label class="form-label">Platform Fee (10%)</label>
+        <input type="text" id="platformFee" class="form-control" readonly/>
+      </div>
+
+      <!-- Total -->
+      <div class="mb-2x">
+        <label class="form-label">Total Amount</label>
+        <input type="text" name="totalAmount" id="totalAmount" class="form-control" readonly/>
+      </div>
+
+     
+
+      <button type="submit" class="btn-submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const jobSelect   = document.getElementById("jobSelect");
+  const customerId  = document.getElementById("customerId");
+  const customerName= document.getElementById("customerName");
+  const customerEmail = document.getElementById("customerEmail");
+
+  const serviceInput= document.getElementById("serviceAmount");
+  const feeInput    = document.getElementById("platformFee");
+  const totalInput  = document.getElementById("totalAmount");
+
+  const PLATFORM_FEE_PERCENT = 10;
+
+  jobSelect.addEventListener("change", function() {
+    const selectedOption = jobSelect.options[jobSelect.selectedIndex];
+    const cId   = selectedOption.getAttribute("data-customer-id");
+    const cName = selectedOption.getAttribute("data-customer-name");
+    const cEmail= selectedOption.getAttribute("data-customer-email");
+
+    if (cId && cName) {
+      customerId.value = cId;
+      customerName.value = cName;
+      customerEmail.textContent = cEmail || "";
+    } else {
+      customerId.value = "";
+      customerName.value = "";
+      customerEmail.textContent = "";
+    }
+  });
+
+  serviceInput.addEventListener("input", () => {
+    const amount = parseFloat(serviceInput.value) || 0;
+    const fee = (amount * PLATFORM_FEE_PERCENT) / 100;
+    const total = amount + fee;
+    feeInput.value = fee.toFixed(2);
+    totalInput.value = total.toFixed(2);
+  });
+</script>

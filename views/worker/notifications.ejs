@@ -1,0 +1,89 @@
+<style>
+  :root {
+    --bg: #000000;
+    --panel: #151821;
+    --row: #1a1d24;
+    --muted: #9aa3b2;
+    --line: #232735;
+    --txt: #e8ecf4;
+    --brand-500: #16da64;
+    --unread-text: #ffe2b4;
+  }
+
+  .notification-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .notification-card.unread {
+    background: var(--panel);
+    border-left: 4px solid var(--brand-500);
+  }
+
+  .notification-content {
+    color: var(--txt);
+  }
+
+  .notification-content .message {
+    font-weight: 500;
+  }
+
+  .notification-content .timestamp {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .notification-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .notification-actions .btn {
+    color: var(--muted);
+  }
+
+  .notification-actions .btn:hover {
+    color: var(--txt);
+  }
+</style>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-white"> Notifications</h2>
+  </div>
+
+  <div>
+    <% if (notifications.length > 0) { %>
+      <% notifications.forEach(note => { %>
+        <div class="notification-card <%= note.isRead ? '' : 'unread' %>">
+          <div class="notification-content">
+            <div class="message"><i class="ri-information-line me-2"></i><%= note.message %></div>
+            <div class="timestamp mt-1"><%= new Date(note.createdAt).toLocaleString() %></div>
+          </div>
+          <div class="notification-actions">
+            <% if (!note.isRead) { %>
+              <form action="/worker/notifications/<%= note._id %>/read" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-sm" title="Mark as read"><i class="ri-check-line"></i></button>
+              </form>
+            <% } %>
+            <form action="/worker/notifications/<%= note._id %>/delete" method="POST" class="d-inline">
+              <button type="submit" class="btn btn-sm" title="Delete"><i class="ri-delete-bin-line"></i></button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="notification-card">
+        <p class="text-muted m-auto">No notifications found.</p>
+      </div>
+    <% } %>
+  </div>
+</div>

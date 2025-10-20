@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password | Servizo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      :root {
+        --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+        --green:#22c55e; --txt:#e8ecf4; --text-300:#a7b0ad; --brand-500: #16da64; --brand-600: #12b754;
+        --danger: #ef4444; --surface: #111418; --card: #151821; --cyan: #22d3ee; --blue: #3b82f6; --amber: #f59e0b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--txt);
+        overflow-x: hidden;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      /* Background Styles */
+      .auth-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%);
+      }
+
+
+.grid-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(33, 13, 212, 0.05) 1px, transparent 2px),
+        linear-gradient(90deg, rgba(33, 13, 212, 0.05) 1px, transparent 2px);
+    background-size: 40px 40px;
+    animation: gridMove 20s linear infinite;
+}
+
+.floating-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.floating-icons i {
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--brand-500);
+    opacity: 0.2;
+    animation: floatIcon 8s ease-in-out infinite;
+}
+
+.floating-icons i:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.floating-icons i:nth-child(2) { top: 60%; left: 80%; animation-delay: 1s; }
+.floating-icons i:nth-child(3) { top: 80%; left: 20%; animation-delay: 2s; }
+.floating-icons i:nth-child(4) { top: 40%; left: 90%; animation-delay: 3s; }
+.floating-icons i:nth-child(5) { top: 10%; left: 70%; animation-delay: 4s; }
+.floating-icons i:nth-child(6) { top: 70%; left: 40%; animation-delay: 5s; }
+.floating-icons i:nth-child(7) { top: 45%; left: 12%; animation-delay: 9s; }
+.floating-icons i:nth-child(8) { top: 25%; left: 65%; animation-delay: 10.5s; }
+
+
+
+.corner-accent {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--brand-500) 0%, transparent 70%);
+    opacity: 0.05;
+    filter: blur(20px);
+}
+
+.corner-accent.top-left {
+    top: -100px;
+    left: -100px;
+}
+
+.corner-accent.bottom-right {
+    bottom: -100px;
+    right: -100px;
+}
+
+@keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+    50% { transform: translateY(-20px) rotate(180deg); opacity: 0.1; }
+}
+      /* Form Container Styles */
+      .reset-container {
+        width: 100%;
+        max-width: 450px;
+        background: var(--panel);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 10;
+        border: 1px solid var(--line);
+      }
+
+      .brand-text {
+        color: var(--green);
+        font-weight: 700;
+        
+      }
+
+      .reset-container p {
+        color: var(--muted);
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .form-text{
+        color: var(--muted);
+      }
+
+      .form-label {
+        color: var(--txt);
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      .form-control {
+        background: var(--card);
+        border: 1px solid var(--line);
+        color: var(--txt);
+        padding: 12px 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        background: var(--card);
+        border-color: var(--brand-500);
+        color: var(--txt);
+        box-shadow: 0 0 0 0.2rem rgba(22, 218, 100, 0.15);
+      }
+
+      .form-control::placeholder {
+        color: var(--muted);
+      }
+
+      .btn-save {
+        background: var(--brand-500);
+        border: none;
+        color: var(--bg);
+        padding: 12px 24px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-save:hover:not(:disabled) {
+        background: var(--brand-600);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(22, 218, 100, 0.3);
+      }
+
+      .btn-save:disabled {
+        background: var(--muted);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-cancel {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-cancel:hover {
+        background: var(--row);
+        color: var(--txt);
+        text-decoration: none;
+      }
+
+      .btn-warning {
+        background: var(--amber);
+        color: var(--bg);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-warning:hover {
+        background: #e69500;
+        transform: translateY(-2px);
+      }
+
+      .invalid-feedback {
+        color: var(--danger);
+        font-size: 0.875rem;
+        margin-top: 4px;
+        display: none;
+      }
+
+      .alert {
+        border: none;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .alert-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+
+      .logo-container {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .logo-icon {
+        font-size: 3rem;
+        color: var(--brand-500);
+        margin-bottom: 10px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 576px) {
+        .reset-container {
+          padding: 30px 20px;
+          margin: 10px;
+        }
+        
+        body {
+          padding: 10px;
+        }
+        
+        .action-buttons {
+          flex-direction: column;
+          gap: 10px;
+        }
+        
+        .btn-cancel, .btn-save {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .floating-card {
+          display: none;
+        }
+        
+        .shape {
+          opacity: 0.05;
+        }
+      }
+    </style>
+</head>
+
+<body>
+  <!-- Background -->
+  <div class="auth-background minimal-grid">
+    <div class="grid-lines"></div>
+    <div class="floating-icons">
+        <i class="fas fa-tools"></i>
+        <i class="fas fa-map-marker-alt"></i>
+        <i class="fas fa-clock"></i>
+        <i class="fas fa-chart-line"></i>
+        <i class="fas fa-users"></i>
+        <i class="fas fa-check-circle"></i>
+        <i class="fas fa-cog"></i>
+        <i class="fas fa-wrench"></i>
+        
+    </div>
+    <div class="corner-accent top-left"></div>
+    <div class="corner-accent bottom-right"></div>
+    <div class="pulse-dots">
+        <div class="pulse-dot dot-1"></div>
+        <div class="pulse-dot dot-2"></div>
+        <div class="pulse-dot dot-3"></div>
+        <div class="pulse-dot dot-4"></div>
+    </div>
+</div>  
+  <!-- Centered Form Container -->
+  <div class="reset-container">
+    <div class="logo-container">
+      <div class="logo-icon">
+        <i class="fas fa-key"></i>
+      </div>
+      <h3 class="brand-text">Servizo</h3>
+    </div>
+    
+    <h2 class="brand-text text-center text-light">Reset Your Password</h2>
+    <p class="text-center">Enter a new password below to change your password.</p>
+
+    <% if (typeof error !== "undefined") { %>
+      <div class="alert alert-danger text-center"><%= error %></div>
+    <% } %>
+
+    <form action="/auth/reset/<%= token %>" method="POST" id="resetForm">
+      <div class="mb-3">
+        <label class="form-label">New Password</label>
+        <input type="password" name="password" id="password" class="form-control" 
+               placeholder="Enter your new password" required minlength="6">
+        <div class="form-text ">Password must be at least 6 characters long.</div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" 
+               placeholder="Confirm your new password" required>
+        <div id="confirmError" class="invalid-feedback">
+          <i class="fas fa-exclamation-circle me-1"></i>Passwords do not match.
+        </div>
+      </div>
+
+      <div class="action-buttons d-flex justify-content-between gap-3">
+        <a href="/auth/login" class="btn-cancel">
+          <i class="fas fa-arrow-left me-2"></i>Cancel
+        </a>
+        <button type="submit" id="submitBtn" class="btn-save" disabled>
+          <i class="fas fa-save me-2"></i>Save Password
+        </button>
+      </div>
+
+      <% if (typeof error !== "undefined" && error.includes("expired")) { %>
+        <div class="text-center mt-4">
+          <a href="/auth/forgot" class="btn-warning">
+            <i class="fas fa-sync-alt me-2"></i>Request New Reset Link
+          </a>
+        </div>
+      <% } %>
+    </form>
+  </div>
+
+  <script>
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const submitBtn = document.getElementById("submitBtn");
+    const confirmError = document.getElementById("confirmError");
+    const resetForm = document.getElementById("resetForm");
+
+    function validateForm() {
+      const passwordValue = password.value;
+      const confirmValue = confirmPassword.value;
+      
+      // Check if passwords match and meet minimum length
+      if (passwordValue && confirmValue) {
+        if (passwordValue === confirmValue && passwordValue.length >= 6) {
+          confirmError.style.display = "none";
+          submitBtn.disabled = false;
+          return true;
+        } else if (passwordValue !== confirmValue) {
+          confirmError.style.display = "block";
+          submitBtn.disabled = true;
+          return false;
+        }
+      }
+      
+      submitBtn.disabled = true;
+      confirmError.style.display = "none";
+      return false;
+    }
+
+    password.addEventListener("input", validateForm);
+    confirmPassword.addEventListener("input", validateForm);
+
+    // Add loading state on form submission
+    resetForm.addEventListener("submit", function() {
+      if (validateForm()) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+      }
+    });
+
+    // Initial validation
+    validateForm();
+  </script>
+</body>
+</html>

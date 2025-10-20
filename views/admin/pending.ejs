@@ -1,0 +1,174 @@
+<style>
+  :root {
+    --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+    --chip:#222733; --chipText:#d8deea; --green:#22c55e; --card:#151821;
+    --txt:#e8ecf4; --grey:#4b5563;
+    --text-100:#e8f1ee; --text-300:#a7b0ad; --muted-600:#4d4f55;
+    --muted-500:#5a5c62; --brand-500:#16da64; --brand-600:#12b754;
+    --chip-border:#284430; --green-dim:#16a34a; --surface:#111418;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--txt);
+    display: flex;
+  
+    font-family: "Poppins", sans-serif;
+  }
+
+  .review-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 48px 40px;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+  }
+
+  .review-card img {
+    width: 90px;
+    margin-bottom: 20px;
+  }
+
+  .review-card h3 {
+    font-size: 1.6rem;
+    color: var(--text-100);
+    margin-bottom: 10px;
+  }
+
+  .review-card p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 0;
+  }
+
+  .status-badge {
+    display: inline-block;
+    margin-top: 18px;
+    background: rgba(22, 218, 100, 0.1);
+    color: var(--brand-500);
+    border: 1px solid rgba(22, 218, 100, 0.25);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.3px;
+  }
+
+    .contact-info {
+    background: var(--row);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 10px;
+    text-align: left;
+    color: var(--text-100);
+  }
+
+  .contact-info h5 {
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: var(--brand-500);
+  }
+
+  .contact-info p {
+    margin: 2px 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .contact-info i {
+    color: var(--green);
+    margin-right: 6px;
+  }
+
+  .contact-info a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-info a:hover {
+    color: var(--brand-500);
+  }
+
+  .additional-info {
+    background: var(--row);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 20px;
+  }
+
+  .additional-info h5 {
+    color: var(--brand-500);
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .additional-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .additional-info li {
+    position: relative;
+    color: var(--muted);
+    font-size: 0.95rem;
+    padding-left: 20px;
+    margin-bottom: 8px;
+  }
+
+  .additional-info li::before {
+    content: "✔";  /* checkmark icon */
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--green);
+    font-size: 0.9rem;
+  }
+
+  .footer-note {
+    text-align: center;
+    color: var(--muted-500);
+    font-size: 0.8rem;
+    margin-top: 16px;
+  }
+</style>
+
+<div class="review-card mx-auto my-3 ">
+  <img src="/images/logo.svg" alt="Logo">
+  <h3>Your account is under review</h3>
+  <p>Please wait until the Super Admin approves your registration.</p>
+  <div class="status-badge">
+    Pending Verification
+  </div>
+
+ 
+
+    <div class="additional-info mt-3">
+    <h5>What happens next?</h5>
+    <ul style="list-style: none; padding: 0; color: var(--muted); font-size: 0.95rem;">
+      <li>• Your account will be reviewed by the Super Admin within 24-48 hours.</li>
+      <li>• You can contact the Super Admin directly if you have any urgent queries.</li>
+      <li>• Make sure your profile is complete after verification.</li>
+    </ul>
+  </div>
+
+  <div class="footer-note mt-3" style="color: var(--muted-500); font-size: 0.8rem;">
+    Thank you for your patience. We prioritize verified and trusted workers on our platform.
+  </div>
+
+   <div class="contact-info">
+    <h5>Contact Super Admin</h5>
+    <p><i class="ri-mail-line"></i> <a href="mailto:savadnk21@gmail.com">savadnk21@gmail.com</a></p>
+  </div>
+</div>

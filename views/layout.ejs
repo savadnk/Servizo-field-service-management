@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%= typeof title !=="undefined" ? title : "Field Service Management" %>
+  </title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- SweetAlert2 CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"><!-- [web:81] -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script><!-- [web:78] -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  </style>
+
+  <!-- Custom CSS -->
+  <% if (typeof styles !=="undefined" ) { %>
+    <% if (Array.isArray(styles)) { %>
+      <% styles.forEach(function(file) { %>
+        <link rel="stylesheet" href="/css/<%= file %>">
+        <% }) %>
+          <% } else { %>
+            <link rel="stylesheet" href="/css/<%= styles %>">
+            <% } %>
+              <% } %>
+
+
+
+
+</head>
+
+<body class="d-flex  min-vh-100 ">
+
+  <!-- Sidebar -->
+ <div class="d-flex">
+    <%- include("layoutes/sidebar.ejs") %>
+ </div>
+
+  <!-- Main content area (header + body + footer) -->
+  <div class="d-flex flex-column flex-grow-1">
+
+    <!-- Header -->
+    <header >
+      <%- include("layoutes/header.ejs") %>
+    </header>
+
+    <!-- Body content -->
+    <main class="flex-grow-1 overflow-auto px-5 ">
+      <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class=" pt-3 text-center small ">
+      <%- include("layoutes/footer.ejs") %>
+    </footer>
+     
+    
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- custom script -->
+    <% if (typeof scripts !=="undefined" ) { %>
+      <% if (Array.isArray(scripts)) { %>
+        <% scripts.forEach(function(file) { %>
+          <script src="/js/<%= file %>"></script>
+          <% }) %>
+            <% } else { %>
+              <script src="/js/<%= scripts %>"></script>
+              <% } %>
+                <% } %>
+
+</body>
+
+</html>

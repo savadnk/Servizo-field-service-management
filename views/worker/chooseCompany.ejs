@@ -1,0 +1,90 @@
+
+<style>
+  :root{
+    --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+    --chip:#222733; --chipText:#d8deea; --green:#22c55e; --txt:#e8ecf4; --blue:#3b82f6;
+  }
+
+  body{ background: var(--bg); color: var(--txt); }
+
+  .company-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    height: 100%;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    cursor: default;
+  }
+  .company-card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+    border-color: #2a3344;
+  }
+
+  .company-name{ font-weight: 700; color: var(--txt); }
+
+  .chip{
+    display: inline-block;
+    background: var(--chip);
+    color: var(--chipText);
+    border: 1px solid #2a3242;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .meta{ color: var(--muted); font-size: 13px; }
+
+  .btn-join{
+    background: rgba(34,197,94,.18);
+    color: var(--green);
+    border: 1px solid rgba(34,197,94,.35);
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .btn-join:hover{ background: rgba(34,197,94,.28); }
+
+  .contact i{ color: var(--blue); }
+</style>
+
+<div class="container mt-4">
+  <h2 class="mb-1">Choose a Company</h2>
+  <p class="text-secondary mb-3">Select the company to work with.</p>
+
+  <div class="row g-3">
+    <% companies.forEach(company => { %>
+      <div class="col-12 col-md-6">
+        <div class="company-card d-flex flex-column">
+          <div class="mb-2">
+            <h5 class="company-name mb-1"><%= company.companyName %></h5>
+            <div class="meta contact">
+              <i class="ri-mail-line me-1"></i><%= company.email %>
+              <span class="mx-2">|</span>
+              <i class="ri-phone-line me-1"></i><%= company.phone %>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <% (company.servicesOffered || []).slice(0,6).forEach(svc => { %>
+              <span class="chip me-1 mb-1"><%= svc %></span>
+            <% }) %>
+            <% if ((company.servicesOffered || []).length > 6) { %>
+              <span class="chip me-1 mb-1">+<%= company.servicesOffered.length - 6 %> more</span>
+            <% } %>
+          </div>
+
+          <div class="mt-auto d-flex justify-content-between align-items-center">
+            <small class="text-secondary">ID: <%= company._id %></small>
+            <form method="post" action="/worker/join-company" class="m-0">
+              <input type="hidden" name="companyId" value="<%= company._id %>">
+              <button type="submit" class="btn btn-join btn-sm">Join Company</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+

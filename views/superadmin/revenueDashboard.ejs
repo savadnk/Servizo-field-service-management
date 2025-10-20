@@ -1,0 +1,128 @@
+<style>
+  :root{
+    --bg:#000000; --panel:#151821; --row:#1a1d24; --muted:#9aa3b2; --line:#232735;
+    --chip:#222733; --chipText:#d8deea; --green:#22c55e; --blue:#141b25; --card:#151821;
+    --amber:#f59e0b; --danger:#ef4444; --txt:#e8ecf4; --grey:#4b5563;
+    --text-100:#e8f1ee; --text-300:#a7b0ad; --surface:#111418;
+  }
+
+  body{ background: var(--bg); color: var(--txt); }
+
+  /* Tiles */
+  .tile{
+    background: var(--row);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px;
+    height: 100%;
+    text-align: center;
+  }
+  .tile h6{ color: var(--text-300); margin-bottom: 6px; }
+  .tile .amount{ font-size: 28px; font-weight: 800; margin: 0; }
+  .tile.gross .amount{ color: var(--green); }
+  .tile.comm  .amount{ color: #2729aeff; }
+  .tile.earn  .amount{ color: var(--amber); }
+  .pill{
+    display:inline-block; margin-top:6px;
+    background: var(--chip); color: var(--chipText);
+    border:1px solid var(--line); border-radius:999px; padding:4px 10px; font-size:12px;
+  }
+
+  /* Table */
+  .table-shell{ background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
+  .table{ margin:0; color: var(--txt); }
+  .table thead th{
+      position: sticky; top: 0; z-index: 1;
+  background: var(--blue);
+  color: var(--txt);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+  }
+  .table tbody td{
+     border-color: var(--line);
+      vertical-align: middle; 
+      text-align:center;
+       color: var(--txt);
+        background-color: var(--panel); }
+  .table-striped tbody tr:nth-of-type(odd){ --bs-table-accent-bg:#131823; }
+
+  /* Status badges */
+  .badge-pill{ border-radius:999px; padding:6px 10px; font-weight:700; border:1px solid var(--line); }
+  .paid{ background: rgba(34,197,94,.15); color: var(--green); border-color: rgba(34,197,94,.35); }
+  .unpaid{ background: rgba(239,68,68,.15); color: var(--danger); border-color: rgba(239,68,68,.35); }
+</style>
+
+<div class="container mt-4">
+  <h2 class="fw-bold mb-4" style="color:var(--text-100)">Revenue Dashboard</h2>
+
+  <!-- Summary Tiles -->
+  <div class="tile-wrap mb-5">
+    <div class="row g-3 text-center">
+      <div class="col-md-4">
+        <div class="tile gross">
+          <h6>Total Gross Revenue</h6>
+          <p class="amount">₹<%= totalGross.toLocaleString() %></p>
+          <span class="pill">All time</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="tile comm">
+          <h6>Platform Commission</h6>
+          <p class="amount">₹<%= platformCommission.toLocaleString() %></p>
+          <span class="pill">Aggregate</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="tile earn">
+          <h6>Agency Earnings</h6>
+          <p class="amount">₹<%= agencyEarnings.toLocaleString() %></p>
+          <span class="pill">Net</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoices Table -->
+  <div class="table-shell p-3">
+    <h5 class="fw-bold mb-3">Invoices Overview</h5>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle text-light">
+        <thead>
+          <tr>
+            <th>Invoice ID</th>
+            <th>Customer</th>
+            <th>Agency</th>
+            <th>Service Type</th>
+            <th>Amount</th>
+            <th>Commission</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% invoices.forEach(inv => { %>
+            <tr>
+              <td><%= inv.invoiceId %></td>
+              <td><%= inv.customer %></td>
+              <td><%= inv.agency %></td>
+              <td><%= inv.serviceType %></td>
+              <td>₹<%= inv.amount.toLocaleString() %></td>
+              <td>₹<%= inv.commission.toLocaleString() %></td>
+              <td>
+                <% if (inv.status === 'Paid') { %>
+                  <span class="badge-pill paid">Paid</span>
+                <% } else { %>
+                  <span class="badge-pill unpaid">Unpaid</span>
+                <% } %>
+              </td>
+              <td><%= inv.date %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

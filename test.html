@@ -1,0 +1,758 @@
+<!-- ✅ Assigned Jobs - Responsive Row Card UI -->
+<style>
+    body {
+        /* Ensure the background is consistent */
+        background: var(--bg);
+    }
+
+    .wrap {
+        padding: 24px;
+    }
+
+    /* --- Desktop & Tablet Grid Styles --- */
+    .header-row {
+        padding: 12px 10px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px 12px 0 0;
+        color: var(--txt);
+        font-weight: 600;
+        display: grid;
+        /* Flexible grid for responsiveness */
+        grid-template-columns: 0.5fr 1fr 1.5fr 1.5fr 1.8fr 1.2fr 1fr 1.2fr;
+        gap: 10px;
+        text-align: left;
+    }
+
+    .job-list {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-top: 0;
+        border-radius: 0 0 12px 12px;
+        overflow: hidden;
+    }
+
+    .job-container {
+        max-height: 500px;
+        overflow-y: auto;
+        border: 1px solid var(--line);
+        border-radius: 0 0 12px 12px;
+    }
+
+    .job-row {
+        display: grid;
+        /* Match header grid */
+        grid-template-columns: 0.5fr 1fr 1.5fr 1.5fr 1.8fr 1.2fr 1fr 1.2fr;
+        gap: 10px;
+        align-items: center;
+        border-top: 1px solid var(--line);
+        padding: 12px 10px;
+    }
+
+    .job-row:first-child {
+        border-top: none;
+    }
+
+    .job-cell {
+        color: var(--txt);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .job-cell.actions {
+        justify-content: flex-end;
+    }
+
+
+
+    .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #0e1116;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        overflow: hidden;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .stack {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .sub {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.2;
+    }
+
+    .pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        border: 1px solid #2a3143;
+        background: #22283a;
+        color: #cfe1ff;
+    }
+
+    .pill.assigned {
+        background: #1f2634;
+        color: #cfe1ff;
+        border-color: #2b3b58;
+    }
+
+    .pill.progress {
+        background: #12232d;
+        color: #b6f3ff;
+        border-color: #214556;
+    }
+
+    .pill.pending {
+        background: #2a2014;
+        color: #ffe2b4;
+        border-color: #3f311c;
+    }
+
+    .pill.completed {
+        background: #14261a;
+        color: #bff7d3;
+        border-color: #254a34;
+    }
+
+    .chip {
+        background: var(--chip);
+        color: var(--chipText);
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 1px solid #2a3242;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .icon {
+        color: #9fb3ff;
+    }
+
+    .icon-loc {
+        color: #8fe3ff;
+    }
+
+    .icon-date {
+        color: #9fb3ff;
+    }
+
+    .icon-time {
+        color: #94f7c3;
+    }
+
+    .btn-assign {
+        background: #1f2634;
+        color: #dbe7ff;
+        border: 1px solid #2b3b58;
+    }
+
+    .btn-assign:hover {
+        background: #263149;
+    }
+
+    .btn-resched {
+        background: #2a2314;
+        color: #ffe2b4;
+        border: 1px solid #3f311c;
+    }
+
+    .btn-resched:hover {
+        background: #3a2d17;
+    }
+
+    .btn-del {
+        background: #211a1a;
+        color: #f5c2c2;
+        border: 1px solid #3d2a2a;
+    }
+
+    .btn-del:hover {
+        background: #3a1f1f;
+    }
+
+    /* --- Scrollbar & Modal Styles --- */
+    /* ✅ Scrollbar (consistent across browsers) */
+    .job-container::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .job-container::-webkit-scrollbar-track {
+        background: var(--panel);
+    }
+
+    .job-container::-webkit-scrollbar-thumb {
+        background: #444b5e;
+        border-radius: 12px;
+        border: 2px solid var(--panel);
+    }
+
+    .job-container::-webkit-scrollbar-thumb:hover {
+        background: #5a637a;
+    }
+
+    .job-container {
+        scrollbar-width: thin;
+        scrollbar-color: #444b5e var(--panel);
+    }
+
+    /* --- Mobile Card Styles --- */
+    .mobile-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+
+    .mobile-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .mobile-row:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-label {
+        font-weight: 600;
+        color: var(--muted);
+        min-width: 100px;
+    }
+
+    .mobile-value {
+        flex: 1;
+        text-align: right;
+    }
+
+    .mobile-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 12px;
+        flex-wrap: wrap;
+    }
+
+    /* --- Modal Styles --- */
+    .modal .job-row {
+        display: grid;
+        grid-template-columns: 40px 150px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .modal .job-row:last-child { border-bottom: none; }
+
+    .modal .job-cell {
+        padding: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .modal .cell.stack {
+        flex-direction: column;
+        align-items: flex-start;
+        /* gap: 2px; */
+    }
+
+    .modal .chip {
+        margin-right: 6px;
+        margin-bottom: 4px;
+    }
+
+    /* Ensure modal body doesn't overflow awkwardly */
+    .modal-body {
+        padding: 0;
+        max-height: 350px;
+        overflow-y: auto;
+    }
+
+    .new-job{
+        background-color: var(--green);
+        color: white;
+    }
+    .new-job:hover{
+        background-color: var(--brand-600);   
+    }
+
+    /* --- Responsive Breakpoints --- */
+    @media (max-width: 991.98px) { /* Hide desktop/tablet table on small screens */
+        .desktop-table {
+            display: none;
+        }
+    }
+
+    @media (min-width: 992px) { /* Hide mobile cards on large screens */
+        .mobile-card-view {
+            display: none;
+        }
+    }
+
+</style>
+
+<div class="container py-4">
+    <h2 class="m-0 text-light">Assigned Jobs</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+                  <form method="get" action="/admin/jobs" class="mt-3">
+  <!-- Status filter -->
+  <select name="status" class="form-select form-select bg-black text-light rounded-pill border-1 border-dark px-4 py-2  w-auto"
+          onchange="this.form.submit()">
+    <option value="">All Status</option>
+    <option value="Pending" <%= selectedStatus==="Pending" ? "selected" : "" %>>Pending</option>
+    <option value="Assigned" <%= selectedStatus==="Assigned" ? "selected" : "" %>>Assigned</option>
+    <option value="Accepted" <%= selectedStatus==="Accepted" ? "selected" : "" %>>Accepted</option>
+    <option value="Paused" <%= selectedStatus==="Paused" ? "selected" : "" %>>Paused</option>
+    <option value="Completed" <%= selectedStatus==="Completed" ? "selected" : "" %>>Completed</option>
+  </select>
+</form>
+
+        <a href="/admin/jobs/create" class="btn new-job">
+            <i class="ri-add-circle-line me-1"></i>Create New Job
+        </a>
+    </div>
+  
+
+    <!-- Desktop & Tablet View -->
+    <div class="desktop-table">
+        <div class="header-row z-0">
+        <div>Job ID</div>
+        <div>Service Type</div>
+        <div>Customer</div>
+        <div>Worker</div>
+        <div>Location</div>
+        <div>Scheduled</div>
+        <div>Status</div>
+        <div class="text-center">Actions</div>
+        </div>
+
+        <div class="job-container">
+            <div class="job-list z-0">
+                <% if (jobs && jobs.length) { %>
+                    <% jobs.forEach(job=> { %>
+                        <div class="job-row">
+                            <!-- Job ID -->
+                            <div class="job-cell">
+                                <span class="chip">
+                                    <%= job.jobId %>
+                                </span>
+                            </div>
+
+                            <!-- Service Type -->
+                            <div class="job-cell">
+                                <div class="stack">
+                                    <span>
+                                        <%= job.serviceType %>
+                                    </span>
+                                    <span class="sub">Service</span>
+                                </div>
+                            </div>
+
+                            <!-- Customer -->
+                            <div class="job-cell">
+                                <div class="avatar"><i class="ri-user-3-fill text-secondary"></i></div>
+                                <div class="stack">
+                                    <span>
+                                        <%= job.customer?.name %>
+                                    </span>
+                                    <span class="sub">
+                                        <%= job.customer?.phone %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Worker -->
+                            <div class="job-cell">
+                                <% if (job.worker) { %>
+                                    <div class="avatar">
+                                        <i class="ri-user-smile-fill text-secondary"></i>
+                                    </div>
+                                    <div class="stack">
+                                        <span>
+                                            <%= job.worker.name %>
+                                        </span>
+                                        <span class="sub">
+                                            <%= job.worker.phone %>
+                                        </span>
+                                    </div>
+                                    <% } else { %>
+                                        <span class="text-warning">Not Assigned</span>
+                                        <% } %>
+                            </div>
+
+                            <!-- Location -->
+                            <div class="job-cell">
+                                <i class="ri-map-pin-line icon-loc"></i>
+                                <% if (job.location) { %>
+                                    <div class="sub d-flex flex-column">
+                                        <span>
+                                            <%= job.location.label %>, <%= job.location.street %>
+                                        </span>
+                                        <span>
+                                            <%= job.location.city %> - <%= job.location.pincode %>
+                                        </span>
+                                    </div>
+                                    <% } else { %>
+                                        <span class="sub text-muted">No Address Info</span>
+                                        <% } %>
+                            </div>
+
+                            <!-- Scheduled -->
+                            <div class="job-cell">
+                                <div class="stack">
+                                    <span><i class="ri-calendar-line icon-date me-1"></i>
+                                        <%= job.scheduled?.split(' ')[0] || job.scheduled %></span>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="job-cell">
+                                <span class="pill
+                                    <%= job.status === ' Completed' ? 'completed' : job.status==='In Progress' ? 'progress'
+                                            : job.status==='Assigned' ? 'assigned' : 'pending' %>">
+                                            <%= job.status %>
+                                    </span>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="job-cell actions">
+                                    <!-- Assign/Reassign Worker -->
+                                    <button class="btn btn-sm btn-assign" data-bs-toggle="modal"
+                                        data-bs-target="#assignModal-<%= job._id %>">
+                                        <i class="ri-user-add-line me-1"></i>
+                                    </button>
+
+                                    <!-- Reschedule -->
+                                    <form action="/admin/jobs/<%= job._id %>/reschedule" method="POST"
+                                        class="d-flex align-items-center gap-2 ">
+                                        <input type="date" name="newDate" class=" btn btn-sm btn-resched border-1" required
+                                            style="max-width: 30px; color: var(--green);">
+                                        <button type="submit" class="btn btn-sm btn-resched">
+                                            <i class="ri-calendar-event-line me-1"></i>
+                                        </button>
+                                    </form>
+
+                                    <!-- Delete -->
+                                    <form action="/admin/jobs/<%= job._id %>/delete" method="POST">
+                                        <button type="submit" class="btn btn-sm btn-del confirm-del">
+                                            <i class="ri-delete-bin-6-line"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="p-4 text-center text-secondary">No assigned jobs found</div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Card View -->
+    <div class="mobile-card-view">
+        <% if (jobs && jobs.length) { %>
+            <% jobs.forEach(job=> { %>
+                <div class="mobile-card">
+                            <div class="mobile-row">
+                                <div class="mobile-label">Job ID</div>
+                                <div class="mobile-value">
+                                    <span class="chip">
+                                        <%= job.jobId %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="mobile-row">
+                                <div class="mobile-label">Service Type</div>
+                                <div class="mobile-value">
+                                    <span>
+                                        <%= job.serviceType %>
+                                    </span>
+                                    <div class="sub">Service</div>
+                                </div>
+                            </div>
+
+                            <div class="mobile-row">
+                                <div class="mobile-label">Customer</div>
+                                <div class="mobile-value">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        <div class="avatar"><i class="ri-user-3-fill text-secondary"></i></div>
+                                        <div class="text-end">
+                                            <div>
+                                                <%= job.customer?.name %>
+                                            </div>
+                                            <div class="sub">
+                                                <%= job.customer?.phone %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                  
+                            </div>
+
+                            <div class="mobile-row">
+                                <div class="mobile-label">Worker</div>
+                                <div class="mobile-value">
+                                    <% if (job.worker) { %>
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <div class="avatar">
+                                                <i class="ri-user-smile-fill text-secondary"></i>
+                                            </div>
+                                            <div class="text-end">
+                                                <div>
+                                                    <%= job.worker.name %>
+                                                </div>
+                                                <div class="sub">
+                                                    <%= job.worker.phone %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } else { %>
+                                            <span class="text-warning">Not Assigned</span>
+                                            <% } %>
+                                </div>
+                            </div>
+
+                            <div class="mobile-row">
+                                <div class="mobile-label">Location</div>
+                                <div class="mobile-value">
+                                    <% if (job.location) { %>
+                                        <div class="text-end">
+                                            <div>
+                                                <%= job.location.label %>, <%= job.location.street %>
+                                            </div>
+                                            <div class="sub">
+                                                <%= job.location.city %> - <%= job.location.pincode %>
+                                            </div>
+                                        </div>
+                                        <% } else { %>
+                                            <span class="sub text-muted">No Address Info</span>
+                                            <% } %>
+                                </div>
+                            </div>
+
+                            <div class="mobile-row">
+                                <div class="mobile-label">Scheduled</div>
+                                <div class="mobile-value">
+                                    <div class="text-end">
+                                        <div><i class="ri-calendar-line icon-date me-1"></i>
+                                            <%= job.scheduled?.split(' ')[0] || job.scheduled %></div>
+                                    <div class="sub"><i class="ri-time-line icon-time me-1"></i><%= job.scheduled?.split(' ')[1] || '' %></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-row">
+                            <div class="mobile-label">Status</div>
+                            <div class="mobile-value">
+                                <span class="pill
+                                    <%= job.status === ' Completed' ? 'completed' : job.status==='Assigned'
+                                                ? 'assigned' : 'pending' %>">
+                                                <%= job.status %>
+                                                    </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mobile-actions">
+                                        <!-- Assign/Reassign Worker -->
+                                        <button class="btn btn-sm btn-assign" data-bs-toggle="modal"
+                                            data-bs-target="#assignModal-<%= job._id %>">
+                                            <i class="ri-user-add-line me-1"></i> Assign
+                                        </button>
+
+                                        <!-- Reschedule -->
+                                        <form action="/admin/jobs/<%= job._id %>/reschedule" method="POST"
+                                            class="d-flex align-items-center gap-2">
+                                            <input type="date" name="newDate" class="form-control form-control-sm"
+                                                required style="max-width: 120px;">
+                                            <button type="submit" class="btn btn-sm btn-resched">
+                                                <i class="ri-calendar-event-line me-1"></i> Reschedule
+                                            </button>
+                                        </form>
+
+                                        <!-- Delete -->
+                                        <form action="/admin/jobs/<%= job._id %>/delete" method="POST">
+                                            <button type="submit" class="btn btn-sm btn-del confirm-del">
+                                                <i class="ri-delete-bin-6-line me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+            <% }) %>
+        <% } else { %>
+            <!-- This message is shown inside the desktop table if empty, so it's not needed here unless you want it duplicated. -->
+        <% } %>
+    </div>
+
+    <!-- Modals (common for all views) -->
+    <% if (jobs && jobs.length) { %>
+        <% jobs.forEach(job=> { %>
+            <div class="modal fade p-0" id="assignModal-<%= job._id %>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered ">
+                    <div class="modal-content"
+                        style="background: var(--panel); border: 1px solid var(--line); border-radius: 12px;">
+                        <div class="modal-header"
+                            style="border-bottom: 1px solid var(--line); background: var(--row); color: #e8ecf4;">
+                            <h5 class="modal-title">Assign Worker</h5>
+                            <button type="button" class="btn-close btn-close-white"
+                                data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <% if (activeWorkers && activeWorkers.length> 0) { %>
+                                <% activeWorkers.forEach(w=> { %>
+                                    <form action="/admin/jobs/<%= job._id %>/assign" method="POST"
+                                        class="job-row">
+                                        <input type="hidden" name="workerId" value="<%= w._id %>">
+
+                                        <div class="job-cell">
+                                            <div class="avatar">
+                                                <i class="ri-user-line icon"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="job-cell stack">
+                                            <span>
+                                                <%= w.name %>
+                                            </span>
+                                            <span class="sub">
+                                                <%= w.phone %>
+                                            </span>
+                                        </div>
+
+                                        <div class="job-cell">
+                                            <% if (w.skills && w.skills.length> 0) { %>
+                                                <div class="">
+                                                    <% w.skills.forEach(skill=> { %>
+                                                        <span class="chip ">
+                                                            <%= skill %>
+                                                        </span>
+                                                        <% }); %>
+                                                </div>
+                                                <% } else { %>
+                                                    <span class="sub">No skills</span>
+                                                    <% } %>
+                                        </div>
+
+                                        <div class="job-cell">
+                                            <button type="submit"
+                                                class="btn btn-assign btn-sm">Assign</button>
+                                        </div>
+                                    </form>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div class="p-3 text-center text-muted">No available
+                                                workers</div>
+                                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const params = new URLSearchParams(location.search);
+        const success = params.get('success');
+        const error = params.get('error');
+
+        if (success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: success,
+                confirmButtonText: 'OK',
+                timer: 1800,
+                timerProgressBar: true
+            });
+        } else if (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error,
+                confirmButtonText: 'OK'
+            });
+        }
+
+        document.querySelectorAll('.confirm-del').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = this.closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This service request will be permanently deleted.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        const params = new URLSearchParams(location.search);
+                        const success = params.get('success');
+                        const error = params.get('error');
+
+                        if (success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: success,
+                                confirmButtonText: 'OK',
+                                timer: 1800,
+                                timerProgressBar: true
+                            });
+                        } else if (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: error,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+
+                        document.querySelectorAll('.confirm-del').forEach(btn => {
+                            btn.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                const form = this.closest('form');
+
+                                Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'This service request will be permanently deleted.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        form.submit();
+                                    }
+                                });
+                            });
+                        });
+                    </script>

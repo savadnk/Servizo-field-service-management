@@ -1,0 +1,214 @@
+
+<!-- Sidebar / Offcanvas -->
+<div class="offcanvas offcanvas-start offcanvas-lg sidebar text-white px-3 py-1" tabindex="-1" id="appSidebar" aria-labelledby="appSidebarLabel">
+  <div class="offcanvas-header d-lg-none">
+    <h5 class="offcanvas-title" id="appSidebarLabel">Servizo</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body d-flex flex-column px-0">
+    <!-- Existing sidebar content START -->
+    <div class="d-flex align-items-center p-3 mb-2 d-none d-lg-flex">
+      <!-- <img src="/images/logo.svg" alt="fsms" height="40" width="40" /> -->
+<i class="fas fa-tools pe-1" style="font-size: 1.7rem;"></i>
+      <h2 class="ps-2 mb-0">Servizo</h2>
+    </div>
+
+    <ul class="nav flex-column mb-3">
+      <% if (typeof user !== "undefined" && user && user.role === "superadmin") { %>
+          <!-- superadmin links -->
+          <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'dashboard' ? 'active' : '' %>" href="/superadmin/dashboard">
+          <i class="ri-dashboard-line me-2"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'adminManage' ? 'active' : '' %>" href="/superadmin/admins">
+          <i class="ri-briefcase-line me-2"></i> Admin Management
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'workerManage' ? 'active' : '' %>" href="/superadmin/workers">
+          <i class="ri-user-settings-line me-2"></i> Workers Oversight
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'customerManage' ? 'active' : '' %>" href="/superadmin/customers">
+          <i class="ri-user-3-line me-2"></i> Customers Oversight
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'jobManage' ? 'active' : '' %>" href="/superadmin/jobs">
+          <i class="ri-briefcase-line me-2"></i> Service Requests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'platformManage' ? 'active' : '' %>" href="/superadmin/platform">
+          <i class="ri-briefcase-line me-2"></i> Platform Earnings
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'notificationManage' ? 'active' : '' %>" href="/superadmin/notifications">
+          <i class="ri-notification-3-line me-2"></i> Notifications
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'settingManage' ? 'active' : '' %>" href="/superadmin/settings">
+          <i class="ri-settings-3-line me-2"></i> Settings
+        </a>
+      </li>
+        <% } %>
+
+        <% if (typeof user !== "undefined" && user && user.role === "admin") { %>
+          <!-- admin links -->
+          <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'dashboard' ? 'active' : '' %>" href="/admin/dashboard">
+          <i class="ri-dashboard-line me-2"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'serviceManage' ? 'active' : '' %>" href="/admin/services">
+          <i class="ri-briefcase-line me-2"></i> Service Requests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'assignManage' ? 'active' : '' %>" href="/admin/jobs">
+          <i class="ri-user-settings-line me-2"></i> Assigned Jobs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'workerManage' ? 'active' : '' %>" href="/admin/workers">
+          <i class="ri-user-3-line me-2"></i> Workers Oversight
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'paymentManage' ? 'active' : '' %>" href="/admin/invoices">
+          <i class="ri-settings-3-line me-2"></i> Payments
+        </a>
+      </li>
+     
+
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'notificationManage' ? 'active' : '' %>" href="/admin/notifications">
+          <i class="ri-notification-3-line me-2"></i> Notifications
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'settingManage' ? 'active' : '' %>" href="/admin/settings">
+          <i class="ri-settings-3-line me-2"></i> Settings
+        </a>
+      </li>
+        <% } %>
+
+        <% if (typeof user !== "undefined" && user && user.role === "worker") { %>
+          <!-- worker links -->
+          <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'dashboard' ? 'active' : '' %>" href="/worker/dashboard">
+          <i class="ri-dashboard-line me-2"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'jobManage' ? 'active' : '' %>" href="/worker/jobs">
+          <i class="ri-briefcase-line me-2"></i> My jobs
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'mapManage' ? 'active' : '' %>" href="/worker/maps">
+          <i class="ri-map-pin-line"></i>  Map Integration
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'scheduleManage' ? 'active' : '' %>" href="/worker/schedule">
+         <i class="ri-calendar-line"></i>   Job Schedule
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'earningsManage' ? 'active' : '' %>" href="/worker/earnings">
+         <i class="ri-calendar-line"></i>   Earnings & Payments
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'notificationManage' ? 'active' : '' %>" href="/worker/notifications">
+          <i class="ri-notification-3-line me-2"></i> Notifications
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'settingManage' ? 'active' : '' %>" href="/worker/settings">
+          <i class="ri-settings-3-line me-2"></i> Settings
+        </a>
+      </li>
+        <% } %>
+
+        <% if (typeof user !== "undefined" && user && user.role === "customer") { %>
+          <!-- customer links -->
+         <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'dashboard' ? 'active' : '' %>" href="/customer/dashboard">
+          <i class="ri-dashboard-line me-2"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'requestManage' ? 'active' : '' %>" href="/customer/request">
+          <i class="ri-briefcase-line me-2"></i>New Service Request
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'serviceManage' ? 'active' : '' %>" href="/customer/jobs">
+          <i class="ri-map-pin-line"></i> My Requests
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'historyManage' ? 'active' : '' %>" href="/customer/history">
+         <i class="ri-calendar-line"></i>  Service History
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'paymentManage' ? 'active' : '' %>" href="/customer/invoices">
+          <i class="ri-settings-3-line me-2"></i> Payments
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'notificationManage' ? 'active' : '' %>" href="/customer/notifications">
+          <i class="ri-notification-3-line me-2"></i> Notifications
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link text-white <%= active === 'settingManage' ? 'active' : '' %>" href="/customer/settings">
+          <i class="ri-settings-3-line me-2"></i> Settings
+        </a>
+      </li>
+        <% } %>
+    </ul>
+
+    <!-- User profile and logout moved outside offcanvas-body to stick to the bottom -->
+  </div>
+
+  <div class="mt-auto p-3">
+    <div class="d-flex text-start align-items-center">
+      <% 
+        let photoSrc = '/images/logo.svg'; // Default photo
+        if (typeof user !== 'undefined' && user && user.profilePhoto) photoSrc = user.profilePhoto;
+        else if (typeof admin !== 'undefined' && admin && admin.profilePhoto) photoSrc = admin.profilePhoto;
+        else if (typeof worker !== 'undefined' && worker && worker.profilePhoto) photoSrc = worker.profilePhoto;
+        else if (typeof customer !== 'undefined' && customer && customer.profilePhoto) photoSrc = customer.profilePhoto;
+      %>
+      <img class="rounded-circle me-2" src="<%= photoSrc %>" alt="profile" height="50" width="50" style="object-fit: cover;">
+      <% if (user) { %>
+        <div>
+          <p class="mb-0"><%= user.name %></p>
+          <small><%= user.email %></small>
+        </div>
+      <% } else { %>
+        <div>
+          <p class="mb-0">Guest</p>
+          <small>Not logged in</small>
+        </div>
+      <% } %>
+    </div>
+    <a href="/auth/logout" class="my-3 btn btn-danger w-100">
+      <i class="ri-logout-box-r-line me-1"></i> Log out
+    </a>
+  </div>
+</div>

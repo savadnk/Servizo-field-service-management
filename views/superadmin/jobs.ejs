@@ -1,0 +1,155 @@
+
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Service Requests</h2>
+
+  <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table class="table  table-hover align-middle text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>Request ID</th>
+          <th>Customer</th>
+          <th>Agency</th>
+          <th>Assigned Worker</th>
+          <th>Service Type</th>
+          <th>Status</th>
+          <th>Scheduled Date</th>
+          <th>Completed Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (jobs && jobs.length > 0) { %>
+          <% jobs.forEach(job => { %>
+            <tr>
+              <td><%= job.shortId %></td>
+              <td><%= job.customer %></td>
+              <td><%= job.agency %></td>
+              <td>
+                <% if(job.worker === "Unassigned"){ %>
+                  <span class="badge bg-warning text-dark">Unassigned</span>
+                <% } else { %>
+                  <%= job.worker %>
+                <% } %>
+              </td>
+              <td><%= job.serviceType %></td>
+              <td>
+                <% if(job.status === "Completed"){ %>
+                  <span class="badge bg-success">Completed</span>
+                <% } else if(job.status === "Pending"){ %>
+                  <span class="badge bg-secondary">Pending</span>
+                <% } else if(job.status === "In Progress"){ %>
+                  <span class="badge bg-info text-dark">In Progress</span>
+                <% } else { %>
+                  <span class="badge bg-dark"><%= job.status %></span>
+                <% } %>
+              </td>
+              <td><%= job.scheduledDate %></td>
+              <td>
+                <% if(job.completedDate === "Not Completed"){ %>
+                  <span class="text-danger">Not Completed</span>
+                <% } else { %>
+                  <%= job.completedDate %>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="8" class="text-center text-muted">No service requests found</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<style>
+    .table thead th {
+        /* border-top: none !important; */
+        font-weight: 600;
+        color: #e9ecef;
+        background-color: #151821 !important;
+    }
+
+
+
+    .table td,
+    .table th {
+        /* border-top: none !important; */
+        color: #e9ecef;
+        vertical-align: middle;
+        padding: .75rem 0.5rem;
+        background-color: #151821 !important;
+    }
+
+    .hover-effect:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table-responsive {
+        border-radius: 1rem;
+        overflow: hidden;
+        background-color: #151821;
+    }
+
+    .btn-outline-success,
+    .btn-outline-danger,
+    .btn-outline-primary {
+        transition: all 0.2s ease;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #198754;
+        color: white;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Target the scrollable div */
+    .scrollable-table {
+        max-height: 400px;
+        max-width: 100%;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    /* Scrollbar width */
+    .scrollable-table::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    /* Track (background of scrollbar) */
+    .scrollable-table::-webkit-scrollbar-track {
+        background: #797979;
+        /* light gray */
+        border-radius: 5px;
+    }
+
+    /* Thumb (draggable handle) */
+    .scrollable-table::-webkit-scrollbar-thumb {
+        background: #16da64;
+        /* Bootstrap blue */
+        border-radius: 5px;
+    }
+
+    /* Thumb on hover */
+    .scrollable-table::-webkit-scrollbar-thumb:hover {
+        background: #0fac4e;
+        /* darker blue */
+    }
+</style>
