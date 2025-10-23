@@ -46,7 +46,7 @@ const getEarningsDashboard = async (req, res) => {
 
   } catch (error) {
     console.error("Error loading worker dashboard:", error);
-    res.status(500).render("error", { error: "Failed to load earnings dashboard" });
+    res.status(500).render("error", { error: "Failed to load earnings dashboard", layout: false });
   }
 };
 

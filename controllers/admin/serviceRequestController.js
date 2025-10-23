@@ -8,7 +8,7 @@ const getServiceRequests = async (req, res) => {
     try {
         
         if (req.user.role !== "admin") {
-            return res.status(403).render("error", { error: "Access denied!" });
+            return res.status(403).render("error", { error: "Access denied!", layout: false });
         }
         const admin = await Admin.findById(req.user.id);
         if (!admin.verified) {
@@ -67,14 +67,14 @@ const getServiceRequests = async (req, res) => {
 
     } catch (error) {
         console.error("Get Service Requests Error:", error);
-        res.status(500).render("error", { error: "Failed to load service requests" });
+        res.status(500).render("error", { error: "Failed to load service requests", layout: false });
     }
 };
 
 const deleteServiceRequest = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const { id } = req.params;
@@ -85,7 +85,7 @@ const deleteServiceRequest = async (req, res) => {
     res.redirect("/admin/services");
   } catch (error) {
     console.error("Delete Service Request Error:", error);
-    res.status(500).render("error", { error: "Failed to delete service request" });
+    res.status(500).render("error", { error: "Failed to delete service request", layout: false });
   }
 };
 

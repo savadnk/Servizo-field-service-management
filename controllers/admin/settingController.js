@@ -11,7 +11,7 @@ const getAdminProfile = async (req, res) => {
   try {
     
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const admin = await Admin.findById(req.user.id).lean();
@@ -31,7 +31,7 @@ const getAdminProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Profile Error:", error);
-    res.status(500).render("error", { error: "Failed to load profile" });
+    res.status(500).render("error", { error: "Failed to load profile", layout: false });
   }
 };
 
@@ -40,7 +40,7 @@ const getAdminProfile = async (req, res) => {
 const updateAdminProfile = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const { companyName, servicesOffered, name } = req.body;
@@ -60,7 +60,7 @@ const updateAdminProfile = async (req, res) => {
     res.redirect(`/admin/settings?success=${encodeURIComponent('Profile Updated')}`);
   } catch (error) {
     console.error("Update Profile Error:", error);
-    res.status(500).render("error", { error: "Failed to update profile" });
+    res.status(500).render("error", { error: "Failed to update profile", layout: false });
   }
 };
 
@@ -139,21 +139,21 @@ const changePassword = async (req, res) => {
 };
 
 // POST - Save bank details
-const saveBankDetails = async (req, res) => {
-  try {
-    const { bankAccountNumber, ifscCode } = req.body;
-    const admin = await Admin.findById(req.user.id);
+// const saveBankDetails = async (req, res) => {
+//   try {
+//     const { bankAccountNumber, ifscCode } = req.body;
+//     const admin = await Admin.findById(req.user.id);
 
-    admin.bankAccountNumber = bankAccountNumber;
-    admin.ifscCode = ifscCode;
-    await admin.save();
+//     admin.bankAccountNumber = bankAccountNumber;
+//     admin.ifscCode = ifscCode;
+//     await admin.save();
 
-    res.redirect("/admin/settings?success=Bank details saved successfully");
-  } catch (err) {
-    console.error("Error saving bank details:", err);
-    res.status(500).send("Error saving bank details");
-  }
-};
+//     res.redirect("/admin/settings?success=Bank details saved successfully");
+//   } catch (err) {
+//     console.error("Error saving bank details:", err);
+//     res.status(500).send("Error saving bank details");
+//   }
+// };
 
 
 
@@ -163,5 +163,5 @@ module.exports = {
   updateAdminProfile,
   updateProfilePhoto,
   changePassword,
-  saveBankDetails,
+  // saveBankDetails,
 };

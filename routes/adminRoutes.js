@@ -45,7 +45,7 @@ router.get("/settings", authenticate, authorizeRole("admin"),  getAdminProfile)
 router.post("/settings/update", authenticate, authorizeRole("admin"), updateAdminProfile)
 router.post("/settings/photo", authenticate, authorizeRole("admin"), upload.single("profilePhoto"), updateProfilePhoto)
 router.post("/settings/password", authenticate, authorizeRole("admin"), changePassword)
-router.post("/settings/bank", authenticate, authorizeRole("admin"), saveBankDetails) 
+// router.post("/settings/bank", authenticate, authorizeRole("admin"), saveBankDetails) 
 
 router.post("/payment/create-subaccount", authenticate, authorizeRole("admin"), createRazorpaySubAccount);
 

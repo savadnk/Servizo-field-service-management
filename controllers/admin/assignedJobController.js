@@ -4,8 +4,6 @@ const { Worker, Customer, Admin } = require("../../models/User");
 const Address = require("../../models/Address");
 const Notification = require("../../models/Notification");
 
-
-
 const getAssignedJobs = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -85,7 +83,7 @@ const formattedJobs = jobs.map((job, index) => ({
 
   } catch (error) {
     console.error("Get Assigned Jobs Error:", error);
-    res.status(500).render("error", { error: "Failed to load assigned jobs" });
+    res.status(500).render("error", { error: "Failed to load assigned jobs", layout: false });
   }
 };
 
@@ -104,7 +102,7 @@ const deleteJob = async (req, res) => {
     res.redirect("/admin/jobs");
   } catch (error) {
     console.error("Delete Job Error:", error);
-    res.status(500).render("error", { error: "Failed to delete job" });
+    res.status(500).render("error", { error: "Failed to delete job", layout: false });
   }
 };
 
@@ -117,18 +115,18 @@ const assignWorker = async (req, res) => {
     console.log(req.body);
 
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const job = await Job.findById(id).populate("customer", "name");
    
     if (!job) {
-      return res.status(404).render("error", { error: "Job not found" });
+      return res.status(404).render("error", { error: "Job not found", layout: false });
     }
 
     const worker = await Worker.findById(workerId).select("name");
     if (!worker) {
-      return res.status(404).render("error", { error: "Worker not found" });
+      return res.status(404).render("error", { error: "Worker not found", layout: false });
     }
 
 
@@ -170,7 +168,7 @@ const assignWorker = async (req, res) => {
     res.redirect(`/admin/jobs?success=${encodeURIComponent('Assigned worker')}`);
   } catch (error) {
     console.error("Assign/Reassign Worker Error:", error);
-    res.status(500).render("error", { error: "Failed to assign worker" });
+    res.status(500).render("error", { error: "Failed to assign worker", layout: false });
   }
 };
 
@@ -183,13 +181,13 @@ const rescheduleJob = async (req, res) => {
     const { newDate } = req.body;
 
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const job = await Job.findById(id);
     console.log(job);
     if (!job) {
-      return res.status(404).render("error", { error: "Job not found" });
+      return res.status(404).render("error", { error: "Job not found", layout: false });
     }
 
     job.deadline  = newDate;
@@ -200,7 +198,7 @@ const rescheduleJob = async (req, res) => {
     res.redirect(`/admin/jobs?success=${encodeURIComponent('Date Rescheduled')}`);
   } catch (error) {
     console.error("Reschedule Job Error:", error);
-    res.status(500).render("error", { error: "Failed to reschedule job" });
+    res.status(500).render("error", { error: "Failed to reschedule job", layout: false });
   }
 };
 
@@ -210,7 +208,7 @@ const rescheduleJob = async (req, res) => {
 const getCreateJobForm = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     // Fetch customers (for assigning jobs)
@@ -233,7 +231,7 @@ const getCreateJobForm = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Create Job Form Error:", error);
-    res.status(500).render("error", { error: "Failed to load job form" });
+    res.status(500).render("error", { error: "Failed to load job form", layout: false });
   }
 };
 
@@ -241,7 +239,7 @@ const getCreateJobForm = async (req, res) => {
 const createJob = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const {
@@ -263,7 +261,7 @@ const createJob = async (req, res) => {
 
     // ✅ Validate Customer
     if (!customer || customer.trim() === "") {
-      return res.status(400).render("error", { error: "Please select a valid customer" });
+      return res.status(400).render("error", { error: "Please select a valid customer", layout: false });
     }
 
     let addressId;
@@ -289,7 +287,7 @@ const createJob = async (req, res) => {
       // ✅ Use existing address
       addressId = address;
     } else {
-      return res.status(400).render("error", { error: "Please select or add a valid address" });
+      return res.status(400).render("error", { error: "Please select or add a valid address", layout: false });
     }
 
     // ✅ Create Job
@@ -308,7 +306,7 @@ const createJob = async (req, res) => {
     res.redirect(`/admin/jobs?success=${encodeURIComponent("New job created successfully")}`);
   } catch (error) {
     console.error("Create Job Error:", error);
-    res.status(500).render("error", { error: "Failed to create job" });
+    res.status(500).render("error", { error: "Failed to create job", layout: false });
   }
 };
 

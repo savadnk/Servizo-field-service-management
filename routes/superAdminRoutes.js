@@ -1,6 +1,6 @@
 const express = require("express")
 const authorizeRole = require("../middlewares/roleMiddleware")
-const { authenticate } = require("../middlewares/authMiddleware")
+const { authenticate, } = require("../middlewares/authMiddleware")
 const upload = require("../middlewares/upload")
 const getDashboard = require("../controllers/super_admin/dashboardController")
 const { getAgencies,updateAgencyStatus, approveAgency, blockAgency, } = require("../controllers/super_admin/adminController")

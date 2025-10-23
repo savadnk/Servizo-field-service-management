@@ -62,7 +62,7 @@ const joinCompany = async (req, res) => {
 const getWorkerDashboard = async (req, res) => {
   try {
     if (req.user.role !== "worker") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const workerId = req.user.id;
@@ -94,7 +94,7 @@ const getWorkerDashboard = async (req, res) => {
     const upcomingSchedule = await Job.find({
       _id: { $in: await JobAssignment.find({ worker: workerId }).distinct("job") },
       deadline: { $gte: new Date(), $lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
-    }).populate("customer", "name");
+    }).populate("customer", "name").populate("address");
 
     // 📊 ====== CHART 1: PERFORMANCE TRACKER ======
     const performanceData = {
@@ -136,7 +136,7 @@ const getWorkerDashboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Worker Dashboard Error:", error);
-    res.status(500).render("error", { error: "Server Error loading dashboard" });
+    res.status(500).render("error", { error: "Server Error loading dashboard", layout: false });
   }
 };
 module.exports = { getWorkerDashboard, chooseCompanyPage, joinCompany };

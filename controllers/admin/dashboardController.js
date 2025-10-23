@@ -21,7 +21,7 @@ const getAdminDashboard = async (req, res) => {
   try {
     
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const adminId = req.user.id;
@@ -136,7 +136,7 @@ const revenueTrend = await Invoice.aggregate([
     });
   } catch (error) {
     console.error("Admin Dashboard Error:", error);
-    res.status(500).render("error", { error: "Failed to load dashboard" });
+    res.status(500).render("error", { error: "Failed to load dashboard", layout: false });
   }
   
 };

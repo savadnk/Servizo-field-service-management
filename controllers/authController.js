@@ -6,59 +6,105 @@ const crypto = require("crypto");
 const sendSms = require("../utils/smsService");
 let otpStore = {};
 
-const registerUser = async (req, res) => {
-    try {
+// const registerUser = async (req, res) => {
+//     try {
 
-        const { name, email, phone, password, confirmPassword, role } = req.body
+//         const { name, email, phone, password, confirmPassword, role } = req.body
 
-        // Empty fields
-        if (!name || !email || !phone || !password || !confirmPassword || !role) {
-            return res.status(400).render("auth/register", { error: "All fields are required" });
-        }
+//         // Empty fields
+//         if (!name || !email || !phone || !password || !confirmPassword || !role) {
+//             return res.status(400).render("auth/register", { error: "All fields are required" });
+//         }
 
-        // Password match
-        if (password !== confirmPassword) {
-            return res.status(400).render("auth/register", { error: "Passwords do not match" });
-        }
+//         // Password match
+//         if (password !== confirmPassword) {
+//             return res.status(400).render("auth/register", { error: "Passwords do not match" });
+//         }
 
-        // Password length
-        if (password.length < 6) {
-            return res.status(400).render("auth/register", { error: "Password must be at least 6 characters" });
-        }
+//         // Password length
+//         if (password.length < 6) {
+//             return res.status(400).render("auth/register", { error: "Password must be at least 6 characters" });
+//         }
 
-        // Phone validation
-        if (!/^\d{10}$/.test(phone)) {
-            return res.status(400).render("auth/register", { error: "Phone must be 10 digits" });
-        }
+//         // Phone validation
+//         if (!/^\d{10}$/.test(phone)) {
+//             return res.status(400).render("auth/register", { error: "Phone must be 10 digits" });
+//         }
 
-        const existUser = await User.findOne({ email })
-        if (existUser) {
-            return res.status(400).render("auth/register", { error: "Email already exists" })
-        }
+//         const existUser = await User.findOne({ email })
+//         if (existUser) {
+//             return res.status(400).render("auth/register", { error: "Email already exists" })
+//         }
 
-        const hashed = await bcrypt.hash(password, 12)
-        const newUser = await User.create({ name, email, phone, password: hashed, role, isVerified: false, })
+//         const hashed = await bcrypt.hash(password, 12)
+//         const newUser = await User.create({ name, email, phone, password: hashed, role, isVerified: false, })
         
-        console.log(newUser);
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        otpStore[phone] = { otp, expires: Date.now() + 5 * 60 * 1000 };
- // 5 min expiry
+//         console.log(newUser);
+//         const otp = Math.floor(100000 + Math.random() * 900000).toString();
+//         otpStore[phone] = { otp, expires: Date.now() + 5 * 60 * 1000 };
+//  // 5 min expiry
 
-        await sendSms(phone, `Your OTP for registration is: ${otp}`);
+//         await sendSms(phone, `Your OTP for registration is: ${otp}`);
 
-        // ✅ Redirect to OTP verify page
-        res.redirect(`/auth/verifyOtp?phone=${encodeURIComponent(phone)}&msg=${encodeURIComponent('OTP sent')}`);
-
-
+//         // ✅ Redirect to OTP verify page
+//         res.redirect(`/auth/verifyOtp?phone=${encodeURIComponent(phone)}&msg=${encodeURIComponent('OTP sent')}`);
 
 
-    } catch (error) {
 
-        console.log("Register Error:", error)
-        res.status(500).render("auth/register", { error: "Server Error" , layout: false});
-    }
 
+//     } catch (error) {
+
+//         console.log("Register Error:", error)
+//         res.status(500).render("auth/register", { error: "Server Error" , layout: false});
+//     }
+
+// }
+
+const registerUser = async (req, res) => {
+  try {
+    const { name, email, phone, password, confirmPassword, role } = req.body;
+
+    // Basic validations
+    if (!name || !email || !phone || !password || !confirmPassword || !role)
+      return res.status(400).render("auth/register", { error: "All fields are required", layout: false });
+
+    if (password !== confirmPassword)
+      return res.status(400).render("auth/register", { error: "Passwords do not match", layout: false });
+
+    if (password.length < 6)
+      return res.status(400).render("auth/register", { error: "Password must be at least 6 characters", layout: false });
+
+    if (!/^\d{10}$/.test(phone))
+      return res.status(400).render("auth/register", { error: "Phone must be 10 digits", layout: false });
+
+    const existUser = await User.findOne({ email });
+    if (existUser)
+      return res.status(400).render("auth/register", { error: "Email already exists" , layout: false});
+
+    // Hash password
+    const hashed = await bcrypt.hash(password, 12);
+    const newUser = await User.create({ name, email, phone, password: hashed, role, isVerified: false });
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore[phone] = { otp, expires: Date.now() + 5 * 60 * 1000 }; // 5 min expiry
+
+    // Send SMS
+    const phoneE164 = `+91${phone}`; // Adjust +91 if needed
+    const smsSent = await sendSms(phoneE164, `Your OTP for registration is: ${otp}`);
+
+    if (!smsSent) {
+  return res.redirect(`/auth/login?error=${encodeURIComponent("cannot send messages to unverified numbers.")}`);
 }
+
+
+    res.redirect(`/auth/verifyOtp?phone=${encodeURIComponent(phone)}&msg=${encodeURIComponent('OTP sent')}`);
+  } catch (error) {
+    console.error("Register Error:", error);
+    res.status(500).render("error", { error: "Server Error", layout: false});
+  }
+};
+
 
 const verifyRegisterOtp = async (req, res) => {
   try {
@@ -67,18 +113,18 @@ const verifyRegisterOtp = async (req, res) => {
     console.log("OTP verification attempt:", { phone, otp });
 
     if (!otpStore[phone]) {
-      return res.render("auth/verifyOtp", { phone, error: "OTP expired or not sent." });
+      return res.render("auth/verifyOtp", { phone, error: "OTP expired or not sent." , layout: false});
     }
 
     const { otp: storedOtp, expires } = otpStore[phone];
 
     if (Date.now() > expires) {
       delete otpStore[phone];
-      return res.render("auth/verifyOtp", { phone, error: "OTP expired." });
+      return res.render("auth/verifyOtp", { phone, error: "OTP expired." , layout: false});
     }
 
     if (String(storedOtp) !== String(otp)) {
-      return res.render("auth/verifyOtp", { phone, error: "Invalid OTP." });
+      return res.render("auth/verifyOtp", { phone, error: "Invalid OTP." , layout: false});
     }
 
     // ✅ OTP valid → update user
@@ -227,7 +273,7 @@ const resetPassword = async (req, res) => {
             resetTokenExpire: { $gt: Date.now() },
         });
 
-        if (!user) return res.render("auth/reset", { error: "Invalid or expired token!", token });
+        if (!user) return res.render("auth/reset", { error: "Invalid or expired token!", token , layout: false});
 
         const hashedPassword = await bcrypt.hash(password, 10);
 

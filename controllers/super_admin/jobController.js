@@ -79,7 +79,7 @@ for (const assign of assignments) {
     });
   } catch (error) {
     console.error("Get All Jobs Error:", error);
-    res.status(500).render("error", { error: "Failed to load jobs" });
+    res.status(500).render("error", { error: "Failed to load jobs", layout: false });
   }
 };
 

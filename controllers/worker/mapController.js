@@ -49,7 +49,7 @@ const getWorkerMap = async (req, res) => {
     res.render("worker/map", { jobs, user: req.user, active: "mapManage", title: "Map", worker });
   } catch (error) {
     console.error("Worker Map Error:", error);
-    res.status(500).render("error", { error: "Failed to load map" });
+    res.status(500).render("error", { error: "Failed to load map", layout: false });
   }
 };
 

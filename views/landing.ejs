@@ -606,85 +606,7 @@
             overflow: hidden;
             background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%);
         }
-        /*
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--brand-500), transparent);
-            opacity: 0.1;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .shape-1 {
-            width: 300px;
-            height: 300px;
-            top: -150px;
-            right: -100px;
-            animation-delay: 0s;
-        }
-
-        .shape-2 {
-            width: 200px;
-            height: 200px;
-            bottom: -80px;
-            left: -50px;
-            background: linear-gradient(45deg, var(--cyan), transparent);
-            animation-delay: 2s;
-        }
-
-        .shape-3 {
-            width: 150px;
-            height: 150px;
-            top: 50%;
-            right: 20%;
-            background: linear-gradient(45deg, var(--blue), transparent);
-            animation-delay: 4s;
-        }
-
-        .shape-4 {
-            width: 100px;
-            height: 100px;
-            bottom: 30%;
-            left: 10%;
-            background: linear-gradient(45deg, var(--amber), transparent);
-            animation-delay: 6s;
-        }
-
-        .floating-card {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            background: var(--panel);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--brand-500);
-            font-size: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .floating-card:nth-child(1) {
-            top: 20%;
-            left: 15%;
-            animation-delay: 1s;
-        }
-
-        .floating-card:nth-child(2) {
-            top: 60%;
-            right: 20%;
-            animation-delay: 3s;
-        }
-
-        .floating-card:nth-child(3) {
-            bottom: 20%;
-            left: 70%;
-            animation-delay: 5s;
-        } */
-
-
-
+ 
 
 
 .grid-lines {
@@ -757,21 +679,7 @@
 <body>
 
      <!-- Background -->
-    <!-- <div class="auth-background">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
-        <div class="floating-card">
-            <i class="fas fa-tools"></i>
-        </div>
-        <div class="floating-card">
-            <i class="fas fa-map-marker-alt"></i>
-        </div>
-        <div class="floating-card">
-            <i class="fas fa-users"></i>
-        </div>
-    </div> -->
+ 
 
  <div class="auth-background minimal-grid">
     <div class="grid-lines"></div>
@@ -797,7 +705,7 @@
                 <div class="nav-links">
                     <a href="#home">Home</a>
                     <a href="#features">Features</a>
-                    <a href="#cta">Get Started</a>
+                    <a href="#footer">Get More</a>
                 </div>
                 <div class="auth-buttons">
                     <a href="/auth/login"  class="login-button text-decoration-none">Login</a>
@@ -818,8 +726,8 @@
                     <h1>Streamline Your Field Service Operations</h1>
                     <p>Servizo is a comprehensive web-based platform designed to streamline service operations between administrators, field workers, and customers. Enhance communication and transparency with automated workflows.</p>
                     <div class="hero-buttons">
-                        <button class="primary-button">Start Free Trial</button>
-                        <button class="secondary-button">View Demo</button>
+                        <button class="primary-button"><a href="/auth/register"  class="text-decoration-none">Sign Up</a></button>
+                        
                     </div>
                     <div class="mobile-auth">
                         <button class="login-button">Login</button>
@@ -938,7 +846,7 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-content" id="footer">
                 <div class="footer-column">
                     <h3>Servizo</h3>
                     <p style="color: var(--text-300);">Streamlining field service operations with cutting-edge technology and intuitive design.</p>

@@ -187,30 +187,40 @@
           <div class="stat-sub">This month</div>
         </div>
       </div>
+
+      
     </div>
 
-    <!-- Upcoming Schedule -->
-    <div class="mt-5 col-8 schedule-wrap mx-auto">
-      <div class="schedule-head d-flex align-items-center justify-content-between">
-        <span>Upcoming Schedule</span>
-      </div>
+    
 
-      <% if (upcomingSchedule && upcomingSchedule.length > 0) { %>
-        <ul class="list-group list-group-flush">
+    <!-- Upcoming Schedule -->
+    <div class="mt-5">
+      <h3 class="dash-title mb-3">Upcoming Schedule</h3>
+      <div class="row g-3">
+        <% if (upcomingSchedule && upcomingSchedule.length > 0) { %>
           <% upcomingSchedule.forEach(job => { %>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              
-                <strong><%= job.serviceType %></strong>  
-                <strong> <%= job.customer.name %></strong> 
-              <span class="badge-green">
-                <%= new Date(job.deadline).toLocaleDateString() %>
-              </span>
-            </li>
+            <div class="col-md-6 col-lg-4">
+              <div class="stat-card h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="mb-0"><%= job.serviceType %></h6>
+                  <span class="badge-green flex-shrink-0"><%= new Date(job.deadline).toLocaleDateString() %></span>
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <i class="ri-user-line muted"></i>
+                  <span class="muted fs-6"><%= job.customer.name %></span>
+                </div>
+                <div class="d-flex align-items-start gap-2">
+                  <i class="ri-map-pin-line muted mt-1"></i>
+                  <span class="stat-sub d-block"><%= job.address.street %>, <%= job.address.city %>, <%= job.address.pincode %></span>
+                </div>
+                
+              </div>
+            </div>
           <% }) %>
-        </ul>
-      <% } else { %>
-        <div class="p-3 text-center" style="color: var(--muted);">No upcoming jobs scheduled</div>
-      <% } %>
+        <% } else { %>
+          <div class="col-12"><p class="text-center muted">No upcoming jobs scheduled in the next 7 days.</p></div>
+        <% } %>
+      </div>
     </div>
   </div>
 
@@ -310,4 +320,3 @@
     }
   });
 </script>
-

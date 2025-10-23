@@ -6,7 +6,7 @@ const getAgencyProfile = async (req, res) => {
     const { agencyId } = req.params;
 
     const agency = await Admin.findById(agencyId).lean();
-    if (!agency) return res.status(404).render("error", { error: "Agency not found" });
+    if (!agency) return res.status(404).render("error", { error: "Agency not found", layout: false });
 
     const workers = await Worker.find({ _id: { $in: agency._id } }).lean();
     const jobs = await Job.find({ admin: agency._id }).populate("customer").lean();
@@ -23,7 +23,7 @@ const getAgencyProfile = async (req, res) => {
 
   } catch (error) {
     console.error("Get Agency Profile Error:", error);
-    res.status(500).render("error", { error: "Failed to load agency profile" });
+    res.status(500).render("error", { error: "Failed to load agency profile", layout: false });
   }
 };
 
@@ -33,7 +33,7 @@ const getAgessncyProfile = async (req, res) => {
 
     const agency = await Admin.findById(agencyId).lean();
     if (!agency)
-      return res.status(404).render("error", { error: "Agency not found" });
+      return res.status(404).render("error", { error: "Agency not found", layout: false });
 
     const workers = await Worker.find({ admin: agencyId }).lean();
     const jobs = await Job.find({ admin: agencyId })
@@ -50,7 +50,7 @@ const getAgessncyProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Agency Profile Error:", error);
-    res.status(500).render("error", { error: "Failed to load agency profile" });
+    res.status(500).render("error", { error: "Failed to load agency profile", layout: false });
   }
 };
 
@@ -63,6 +63,6 @@ const blockWorker = async (req, res) => {
     res.redirect("/superadmin/workers");
   } catch (error) {
     console.error("Block Worker Error:", error);
-    res.status(500).render("error", { error: "Failed to block worker" });
+    res.status(500).render("error", { error: "Failed to block worker", layout: false });
   }
 };

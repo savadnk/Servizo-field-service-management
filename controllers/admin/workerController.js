@@ -54,7 +54,7 @@ const getWorkers = async (req, res) => {
 
   } catch (err) {
     console.error("Error fetching workers with job counts:", err);
-    res.status(500).render("error", { error: "Failed to load workers" });
+    res.status(500).render("error", { error: "Failed to load workers", layout: false });
   }
 };
 
@@ -68,7 +68,7 @@ const addWorker = async (req, res) => {
         const { name, email, phone, skills } = req.body;
         const existUser = await Worker.findOne({ email })
         if (existUser) {
-            return res.status(400).render("admin/workers", { error: "Email already exists", user: req.user })
+            return res.status(400).render("admin/workers", { error: "Email already exists", user: req.user, layout: false })
         }
 
         // Generate a default password (phone + "123" for example)
@@ -97,7 +97,7 @@ const addWorker = async (req, res) => {
         res.redirect(`/admin/workers?success=${encodeURIComponent('Created New Worker')}`);
     } catch (err) {
         console.error("Error adding worker:", err);
-        res.status(500).render("error", { error: "Failed to add worker" });
+        res.status(500).render("error", { error: "Failed to add worker", layout: false });
     }
 };
 

@@ -18,7 +18,6 @@ router.get("/dashboard",authenticate, checkBlocked, authorizeRole("worker"), get
 router.get("/choose-company", authenticate, authorizeRole("worker"), chooseCompanyPage)
 router.post("/join-company", authenticate, authorizeRole("worker"), joinCompany)
 
-
 router.get("/jobs", authenticate, authorizeRole("worker"), getMyJobs);
 router.post("/jobs/:id/status", authenticate, authorizeRole("worker"), updateJobStatus);
 

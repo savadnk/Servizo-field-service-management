@@ -45,7 +45,7 @@ const getScheduleView = async (req, res) => {
     });
   } catch (err) {
     console.error("Schedule View Error:", err);
-    res.status(500).render("error", { error: "Failed to load schedule" });
+    res.status(500).render("error", { error: "Failed to load schedule", layout: false });
   }
 };
 

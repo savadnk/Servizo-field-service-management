@@ -1,4 +1,4 @@
-<!-- Error - Styled like Blocked EJS -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +9,8 @@
   <!-- Bootstrap 5.3.2 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Remix Icon (optional warning glyph) -->
+  <!-- ✅ Add Font Awesome for background icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
 
   <style>
@@ -25,9 +27,10 @@
       --amber:#f59e0b;
       --cyan:#22d3ee;
       --danger:#ef4444;
+      --surface: #111418; /* Missing variable for background gradient */
     }
 
-    body{ background:var(--bg); }
+   
 
     .error-card{
       background:var(--panel);
@@ -98,16 +101,114 @@
       font-size:12px;
       margin:0;
     }
+
+      /* Background Styles */
+         .auth-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%);
+        }
+ 
+
+
+.grid-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(33, 13, 212, 0.04) 1px, transparent 2px),
+        linear-gradient(90deg, rgba(33, 13, 212, 0.04) 1px, transparent 2px);
+    background-size: 40px 40px;
+    animation: gridMove 20s linear infinite;
+}
+
+.floating-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.floating-icons i {
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--green);
+    opacity: .5;
+    animation: floatIcon 8s ease-in-out infinite;
+}
+
+.floating-icons i:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.floating-icons i:nth-child(2) { top: 60%; left: 80%; animation-delay: 1s; }
+.floating-icons i:nth-child(3) { top: 80%; left: 20%; animation-delay: 2s; }
+.floating-icons i:nth-child(4) { top: 40%; left: 90%; animation-delay: 3s; }
+.floating-icons i:nth-child(5) { top: 10%; left: 70%; animation-delay: 4s; }
+.floating-icons i:nth-child(6) { top: 70%; left: 40%; animation-delay: 5s; }
+
+.corner-accent {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--brand-500) 0%, transparent 70%);
+    opacity: 0.05;
+    filter: blur(20px);
+}
+
+.corner-accent.top-left {
+    top: -100px;
+    left: -100px;
+}
+
+.corner-accent.bottom-right {
+    bottom: -100px;
+    right: -100px;
+}
+
+@keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.5; }
+    50% { transform: translateY(-20px) rotate(180deg); opacity: 0.2; }
+}
   </style>
 </head>
-<body class="d-flex align-items-center justify-content-center vh-100">
-  <main class="error-card text-center" role="alert" aria-live="assertive" aria-atomic="true">
+
+<body >
+  <div class="auth-background minimal-grid">
+    <div class="grid-lines"></div>
+    <div class="floating-icons">
+        <i class="fas fa-tools"></i>
+        <i class="fas fa-map-marker-alt"></i>
+        <i class="fas fa-clock"></i>
+        <i class="fas fa-chart-line"></i>
+        <i class="fas fa-users"></i>
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <div class="corner-accent top-left"></div>
+    <div class="corner-accent bottom-right"></div>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-center vh-100">
+    <main class="error-card text-center" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="error-icon" aria-hidden="true">
       <i class="ri-error-warning-line" style="font-size:28px;"></i>
     </div>
 
     <h2 class="error-title">Oops! Something went wrong</h2>
-    <p class="error-text"><%= error %></p>
+    <% if (locals.statusCode) { %>
+      <h1 class="display-1 text-danger fw-bold"><%= statusCode %></h1>
+    <% } %>
+    <p class="error-text fs-5"><%= error %></p>
 
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <a href="/auth/login" class="pill btn-home">Go Home</a>
@@ -116,5 +217,8 @@
     <div class="divider"></div>
 
   </main>
+  </div>
+   
+  
 </body>
 </html>

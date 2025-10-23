@@ -258,3 +258,11 @@
     0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
     50% { transform: translateY(-20px) rotate(180deg); opacity: 0.1; }
 }
+
+       .swal2-popup{ background:var(--panel)!important; color:#e8ecf4!important; border:1px solid var(--line)!important; border-radius:16px!important; box-shadow:0 6px 24px rgba(0,0,0,0.45)!important; } /* [web:66] */
+  .swal2-title{ color:#e8ecf4!important; } /* [web:66] */
+  .swal2-html-container{ color:var(--muted)!important; } /* [web:66] */
+  .swal2-icon.swal2-success{ border-color:var(--green)!important; color:var(--green)!important; } /* [web:66] */
+  .swal2-icon.swal2-error{ border-color:var(--danger)!important; color:var(--danger)!important; } /* [web:66] */
+  .swal2-styled.swal2-confirm{ background:#1f2634!important; color:#dbe7ff!important; border:1px solid #2b3b58!important; border-radius:999px!important; padding:10px 16px!important; }
+  .swal2-styled.swal2-cancel{ background:#2a2314!important; color:#ffe2b4!important; border:1px solid #3f311c!important; border-radius:999px!important; padding:10px 16px!important; }

@@ -257,7 +257,7 @@ const workerShare = async (req, res) => {
 
 
     if (!job || !assignment || !invoice) {
-      return res.status(404).render("error", { error: "Job, worker, or invoice not found" });
+      return res.status(404).render("error", { error: "Job, worker, or invoice not found", layout: false });
     }
 
     // ✅ Use serviceAmount from Invoice (example: 70% goes to worker)

@@ -1,5 +1,5 @@
 body {
-  background-color: #000000;
+  background-color: var(--bg);
   color: #fff;
   margin: 0;
   padding: 0;
@@ -44,7 +44,7 @@ header .btn:hover{
 
 .header {
   border-bottom: 2px solid #151821;
-    box-shadow: 0 9px 12px -15px #16da64;
+    box-shadow: 0 9px 12px -12px  var(--cyan );
 }
 /* .header::after {
   content: "";
@@ -118,4 +118,5 @@ footer{
   }
  
 }
+
 

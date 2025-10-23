@@ -5,7 +5,7 @@ const {  Admin } = require("../../models/User");
 const getNotifications = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
      const admin = await Admin.findById(req.user.id);
         if (!admin.verified) {
@@ -28,7 +28,7 @@ const getNotifications = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Notifications Error:", error);
-    res.status(500).render("error", { error: "Failed to load notifications" });
+    res.status(500).render("error", { error: "Failed to load notifications", layout: false });
   }
 };
 
@@ -40,7 +40,7 @@ const markAsRead = async (req, res) => {
     res.redirect("/admin/notifications");
   } catch (error) {
     console.error("Mark as Read Error:", error);
-    res.status(500).render("error", { error: "Failed to update notification" });
+    res.status(500).render("error", { error: "Failed to update notification", layout: false });
   }
 };
 
@@ -52,7 +52,7 @@ const deleteNotification = async (req, res) => {
     res.redirect("/admin/notifications");
   } catch (error) {
     console.error("Delete Notification Error:", error);
-    res.status(500).render("error", { error: "Failed to delete notification" });
+    res.status(500).render("error", { error: "Failed to delete notification", layout: false });
   }
 };
 

@@ -10,7 +10,7 @@ const getWorkerProfile = async (req, res) => {
   try {
     
     if (req.user.role !== "worker") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
    
@@ -33,14 +33,14 @@ const getWorkerProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Profile Error:", error);
-    res.status(500).render("error", { error: "Failed to load profile" });
+    res.status(500).render("error", { error: "Failed to load profile", layout: false });
   }
 };
 
 const updateWorkerProfile = async (req, res) => {
   try {
     if (req.user.role !== "worker") {
-      return res.status(403).render("error", { error: "Access denied!" });
+      return res.status(403).render("error", { error: "Access denied!", layout: false });
     }
 
     const {  skills, name } = req.body;
@@ -59,7 +59,7 @@ const updateWorkerProfile = async (req, res) => {
     res.redirect(`/worker/settings?success=${encodeURIComponent('Profile Updated')}`);
   } catch (error) {
     console.error("Update Profile Error:", error);
-    res.status(500).render("error", { error: "Failed to update profile" });
+    res.status(500).render("error", { error: "Failed to update profile", layout: false });
   }
 };
 
@@ -119,7 +119,7 @@ const updateProfilePhoto = async (req, res) => {
     return res.redirect(`/worker/settings?success=${encodeURIComponent('Profile Photo Updated')}`);
   } catch (error) {
     console.error("Update Photo Error:", error);
-    res.status(500).render("error", { error: "Failed to update profile photo" });
+    res.status(500).render("error", { error: "Failed to update profile photo", layout: false });
   }
 };
 

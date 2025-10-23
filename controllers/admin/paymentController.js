@@ -112,7 +112,7 @@ const viewInvoice = async (req, res) => {
 
 
   if (!invoice) {
-    return res.status(404).render("error", { error: "Invoice not found" });
+    return res.status(404).render("error", { error: "Invoice not found", layout: false });
   }
 
   res.render("admin/invoiceDetail", {

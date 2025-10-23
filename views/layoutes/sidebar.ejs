@@ -84,7 +84,7 @@
       </li>
        <li class="nav-item">
         <a class="nav-link text-white <%= active === 'paymentManage' ? 'active' : '' %>" href="/admin/invoices">
-          <i class="ri-settings-3-line me-2"></i> Payments
+          <i class="ri-wallet-3-line me-2"></i> Payments
         </a>
       </li>
      
@@ -115,17 +115,17 @@
       </li>
       <li class="nav-item">
         <a class="nav-link text-white <%= active === 'mapManage' ? 'active' : '' %>" href="/worker/maps">
-          <i class="ri-map-pin-line"></i>  Map Integration
+          <i class="ri-map-pin-line me-2"></i>  Map Integration
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white <%= active === 'scheduleManage' ? 'active' : '' %>" href="/worker/schedule">
-         <i class="ri-calendar-line"></i>   Job Schedule
+         <i class="ri-calendar-line me-2"></i>   Job Schedule
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white <%= active === 'earningsManage' ? 'active' : '' %>" href="/worker/earnings">
-         <i class="ri-calendar-line"></i>   Earnings & Payments
+         <i class="ri-wallet-3-line me-2"></i>   Earnings & Payments
         </a>
       </li>
       
@@ -150,22 +150,22 @@
       </li>
       <li class="nav-item">
         <a class="nav-link text-white <%= active === 'requestManage' ? 'active' : '' %>" href="/customer/request">
-          <i class="ri-briefcase-line me-2"></i>New Service Request
+          <i class="ri-briefcase-line me-2"></i>  New Service Request
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white <%= active === 'serviceManage' ? 'active' : '' %>" href="/customer/jobs">
-          <i class="ri-map-pin-line"></i> My Requests
+          <i class="ri-briefcase-fill me-2"></i> My Requests
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white <%= active === 'historyManage' ? 'active' : '' %>" href="/customer/history">
-         <i class="ri-calendar-line"></i>  Service History
+         <i class="ri-calendar-line me-2"></i>  Service History
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white <%= active === 'paymentManage' ? 'active' : '' %>" href="/customer/invoices">
-          <i class="ri-settings-3-line me-2"></i> Payments
+          <i class="ri-wallet-3-line me-2"></i> Payments
         </a>
       </li>
       
@@ -196,9 +196,9 @@
       %>
       <img class="rounded-circle me-2" src="<%= photoSrc %>" alt="profile" height="50" width="50" style="object-fit: cover;">
       <% if (user) { %>
-        <div>
+        <div class="text-truncate">
           <p class="mb-0"><%= user.name %></p>
-          <small><%= user.email %></small>
+          <small class="text-truncate"><%= user.email %></small>
         </div>
       <% } else { %>
         <div>
