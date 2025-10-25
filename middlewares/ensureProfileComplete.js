@@ -11,6 +11,7 @@ const ensureProfileComplete = async (req, res, next) => {
       success: false,
       message: "Please complete your profile before accessing this feature.",
     });
+
   }
 
   next();

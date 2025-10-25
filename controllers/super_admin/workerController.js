@@ -16,7 +16,7 @@ const getWorkers = async (req,res) => {
                     company: worker.admin?.companyName || "N/A",
                     skills: worker.skills,
                     rating: worker.rating,
-                    status: worker.availability,
+                    status: worker.status,
 
                 }
             })
@@ -38,8 +38,8 @@ const getWorkers = async (req,res) => {
 const blockWorker = async (req, res) => {
   try {
     const { id } = req.params;
-    await Worker.findByIdAndUpdate(id, { availability: false });
-
+    const updated = await Worker.findByIdAndUpdate(id, { status: "Blocked" });
+    console.log("Updated Worker:", updated);
     res.redirect("/superadmin/workers");
   } catch (error) {
     console.error("Block Worker Error:", error);
@@ -50,13 +50,13 @@ const blockWorker = async (req, res) => {
 const unblockWorker = async (req, res) => {
   try {
     const { id } = req.params;
-    await Worker.findByIdAndUpdate(id, { availability: true });
-
+    await Worker.findByIdAndUpdate(id, { status: "Active" });
     res.redirect("/superadmin/workers");
   } catch (error) {
     console.error("Unblock Worker Error:", error);
     res.status(500).render("error", { error: "Failed to unblock worker" });
   }
 };
+
 
 module.exports = {getWorkers, blockWorker, unblockWorker };

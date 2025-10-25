@@ -85,8 +85,7 @@ const Customer = User.discriminator("customer", new mongoose.Schema({
         default: "Individual"
     }, 
     status: {
-        type: Boolean,
-        default: true
+        type: String, enum: ["Active", "Blocked"], default: "Active"
     }
 }))
 

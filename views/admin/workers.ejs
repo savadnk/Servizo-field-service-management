@@ -135,7 +135,7 @@
          
         </div>
         <div class="modal-footer" style="border-color:#283041;">
-          <button type="submit" class="btn btn-green">Add Worker</button>
+          <button type="submit" id="checkAccessBtn" class="btn btn-green">Add Worker</button>
         </div>
       </form>
     </div>
@@ -165,4 +165,33 @@
                 confirmButtonText: 'OK'
             }); // standard error modal pattern. [web:66]
         }
+
+//  document.getElementById("checkAccessBtn").addEventListener("click", (e) => {
+//   e.preventDefault(); // stop button's default behavior
+
+//   fetch("/admin/workers/add", { method: "GET" })
+//     .then(async (res) => {
+//       // If not ok (403), parse as JSON (middleware error)
+//       if (!res.ok) {
+//         const data = await res.json().catch(() => null);
+//         throw data || { message: "Please complete your profile before accessing this feature.." };
+//       }
+//       // ✅ If OK, it’s an HTML page → redirect
+//       window.location.href = "/admin/workers/add";
+//     })
+//     .catch((err) => {
+//       Swal.fire({
+//         title: "Complete Your Profile",
+//         text: err.message || "Please complete your profile to continue.",
+//         icon: "info",
+//         background: "#1a1d24",
+//         color: "white",
+//         confirmButtonColor: "#16da64",
+//         confirmButtonText: "Go to Settings"
+//       }).then(() => {
+//         window.location.href = "/admin/settings";
+//       });
+//     });
+// });
+
 </script>

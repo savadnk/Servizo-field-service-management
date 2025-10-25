@@ -31,7 +31,7 @@
               <td><%= cust.phone %></td>
               <td><%= cust.type %></td>
               <td>
-                <% if (cust.status) { %>
+                <% if (cust.status === "Active") { %>
                   <span class="badge ">Active</span>
                 <% } else { %>
                   <span class="badge ">Blocked</span>
@@ -40,7 +40,7 @@
               <td><%= cust.totalRequests %></td>
               <td>₹<%= cust.totalPayments %></td>
               <td>
-                <% if (cust.status) { %>
+                <% if (cust.status === "Active") { %>
                   <!-- Block Button -->
                   <form action="/superadmin/customers/<%= cust.id %>/block" method="POST" class="d-inline">
                     <button type="submit" class="btn btn-sm btn-outline-danger">

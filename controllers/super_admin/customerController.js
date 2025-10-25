@@ -47,7 +47,7 @@ const getCustomers = async (req, res) => {
 const blockCustomer = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.findByIdAndUpdate(id, { status: false });
+    await Customer.findByIdAndUpdate(id, { status: "Blocked" });
     res.redirect("/superadmin/customers");
   } catch (error) {
     console.error("Block Customer Error:", error);
@@ -58,7 +58,7 @@ const blockCustomer = async (req, res) => {
 const unblockCustomer = async (req, res) => {
   try {
     const { id } = req.params;
-    await Customer.findByIdAndUpdate(id, { status: true });
+    await Customer.findByIdAndUpdate(id, { status: "Active" });
     res.redirect("/superadmin/customers");
   } catch (error) {
     console.error("Unblock Customer Error:", error);

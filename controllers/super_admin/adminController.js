@@ -83,7 +83,9 @@ const approveAgency = async (req, res) => {
 // ✅ Block / Suspend agency
 const blockAgency = async (req, res) => {
   try {
-    await Admin.findByIdAndUpdate(req.params.id, { status: "Blocked" });
+    const { id } = req.params;
+    const updated = await Admin.findByIdAndUpdate(id, { status: "Blocked" });
+     console.log("Updated Admin:", updated);
     res.redirect("/superadmin/admins");
   } catch (error) {
     console.error("Block Agency Error:", error);

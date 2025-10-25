@@ -25,7 +25,7 @@
   }
 
   .submit-bar{
-    background: var(--green);
+    background: var(--brand-500);
     color: #0b1610;
     border: none;
     border-radius: 8px;
@@ -92,7 +92,7 @@
     <!-- Description -->
     <div class="mb-3">
       <label class="form-label">Description of Service Needed</label>
-      <textarea name="description" class="form-control" rows="5" placeholder="Please describe the issue or service you require in detail (e.g., 'Leaky faucet in kitchen sink', 'Electrical outlet not working in living room')." required></textarea>
+      <textarea name="description" class="form-control text-wight" rows="5" placeholder="Please describe the issue or service you require in detail ." required></textarea>
     </div>
 
     <!-- Submit bar -->
@@ -101,6 +101,28 @@
 </div>
 
 <script>
+  const params = new URLSearchParams(location.search);
+    const success = params.get('success');
+    const error = params.get('error');
+
+
+    if (success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: success,
+            confirmButtonText: 'OK',
+            timer: 1800,
+            timerProgressBar: true
+        }); // docs examples use icon/title/text options. [web:66]
+    } else if (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error,
+            confirmButtonText: 'OK'
+        }); // standard error modal pattern. [web:66]
+    }
   // Auto-fill admin field based on selected service
   const serviceSelect = document.querySelector("select[name='serviceType']");
   const adminField = document.getElementById("adminField");

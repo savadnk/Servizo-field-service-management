@@ -1,12 +1,12 @@
-<% if (!isProfileComplete) { %>
+<!-- <% if (!isProfileComplete) { %>
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
   <strong>Profile Incomplete!</strong> Please complete your company profile to unlock all features.
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
-<% } %>
+<% } %> -->
 
 <!-- Profile Completion Modal -->
-<div class="modal fade" id="profileCompletionModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="profileCompletionModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content" style="background-color: #1a1d24; color: white; border-radius: 12px;">
       <div class="modal-header">
@@ -32,10 +32,10 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Overlay blocker for incomplete profiles -->
-<div id="blockerOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background: rgba(0,0,0,0.7); z-index: 9999; cursor: not-allowed;">
+<!-- <div id="blockerOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background: rgba(0,0,0,0.7); z-index: 9999; cursor: not-allowed;">
   <div class="d-flex justify-content-center align-items-center h-100">
     <div class="text-center text-white p-4  rounded" style="max-width: 400px; background-color: #1a1d24;">
       <h5>✋ Please complete your profile</h5>
@@ -45,33 +45,36 @@
       </button>
     </div>
   </div>
-</div>
+</div> -->
 
 <% if (!isProfileComplete) { %>
   
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const modal = new bootstrap.Modal(document.getElementById('profileCompletionModal'));
-    modal.show();
+   // Example trigger – you can also call this when a profile is incomplete
+  document.addEventListener("DOMContentLoaded", function() {
+    // You can also add a condition here like:
+    // if (!userProfileComplete) { showProfileAlert(); }
+    showProfileAlert();
+  });
 
-    // Block all clicks if profile is incomplete and modal is closed
-    document.addEventListener('click', function(e) {
-      const isInsideModal = e.target.closest('.modal') || e.target.classList.contains('modal');
-      const isCloseButton = e.target.classList.contains('btn-close') || e.target.closest('.btn-close');
-      const isSaveButton = e.target.closest('#profileCompletionForm');
-
-      if (!isProfileComplete && !isInsideModal && !isSaveButton) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById('blockerOverlay').classList.remove('d-none');
+  function showProfileAlert() {
+    Swal.fire({
+      title: 'Complete Your Profile',
+      text: 'To access all features, please complete your company profile.',
+      icon: 'info',
+      background: '#1a1d24',
+      color: 'white',
+      confirmButtonColor: '#16da64',
+      confirmButtonText: 'Go to Settings',
+      showCancelButton: true,
+      cancelButtonColor: '#6c757d',
+      cancelButtonText: 'Later',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '/admin/settings';
       }
     });
-
-    // Hide overlay when modal is reopened
-    document.getElementById('profileCompletionModal').addEventListener('show.bs.modal', function() {
-      document.getElementById('blockerOverlay').classList.add('d-none');
-    });
-  });
+  }
 </script>
 <% } %>
 

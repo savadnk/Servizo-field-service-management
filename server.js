@@ -4,6 +4,9 @@ const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
 const expressLayouts = require("express-ejs-layouts")
+const favicon = require("serve-favicon");
+
+
 
 dotenv.config();
 const app = express();
@@ -12,8 +15,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(morgan("dev"));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(morgan("dev"));
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -24,17 +28,8 @@ app.use(expressLayouts);
 app.set("layout", "layout")
 app.set("views", path.join(__dirname, "views"));
 
-// user middlware
-// app.use((req, res, next) => {
-//   res.locals.user = req.user || null;
-//   res.locals.active = ""; 
-//   next();
-// });
 
-// app.use((req, res, next) => {
-//   res.locals.user = req.user || null;  // ✅ always available
-//   next();
-// });
+
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null; // if using auth middleware to set req.user

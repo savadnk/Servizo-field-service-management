@@ -46,26 +46,24 @@
               <td><%= worker.rating || " N/A" %>
                             </td>
                             <td>
-                                <% if (worker.status) { %>
-                                    <span class="badge ">Active</span>
-                                    <% } else { %>
-                                        <span class="badge ">Inactive</span>
-                                        <% } %>
+                                <% if (worker.status === "Active") { %>
+    <span class="badge bg-success">Active</span>
+  <% } else { %>
+    <span class="badge bg-danger">Blocked</span>
+    
+  <% } %>
                             </td>
                             <td>
-                                <% if (!worker.status) { %>
-                                    <!-- Unblock Button -->
-                                    <form action="/superadmin/workers/<%= worker.id %>/unblock" method="POST"
-                                        style="display:inline;">
-                                        <button type="submit" class="btn btn-sm btn-success">Unblock</button>
-                                    </form>
-                                    <% } else { %>
-                                        <!-- Block Button -->
-                                        <form action="/superadmin/workers/<%= worker.id %>/block" method="POST"
-                                            style="display:inline;">
-                                            <button type="submit" class="btn btn-sm btn-danger">Block</button>
-                                        </form>
-                                        <% } %>
+                                <% if (worker.status === "Active") { %>
+    <form action="/superadmin/workers/<%= worker.id %>/block" method="POST" style="display:inline;">
+      <button type="submit" class="btn btn-sm btn-danger">Block</button>
+    </form>
+  <% } else { %>
+    <form action="/superadmin/workers/<%= worker.id %>/unblock" method="POST" style="display:inline;">
+      <button type="submit" class="btn btn-sm btn-success">Unblock</button>
+    </form>
+    
+  <% } %>
                             </td>
                         </tr>
                         <% }) %>

@@ -95,6 +95,7 @@ const registerUser = async (req, res) => {
 
     if (!smsSent) {
   return res.redirect(`/auth/login?error=${encodeURIComponent("cannot send messages to unverified numbers.")}`);
+  
 }
 
 
@@ -164,6 +165,7 @@ const loginUser = async (req, res) => {
         name: existUser.name,
         role: existUser.role,
         email: existUser.email,
+        status: existUser.status,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }

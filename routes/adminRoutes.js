@@ -35,7 +35,9 @@ router.get("/jobs/create", authenticate, authorizeRole("admin"),ensureProfileCom
 router.post("/jobs/create", authenticate, authorizeRole("admin"), createJob );
 
 router.get("/workers", authenticate, authorizeRole("admin"),  getWorkers);
-router.post("/workers/add", authenticate, authorizeRole("admin"),ensureProfileComplete, addWorker);
+router.post("/workers/add", authenticate, authorizeRole("admin"), addWorker);
+// Add this in your admin routes file
+
 
 router.get("/notifications", authenticate, authorizeRole("admin"), getNotifications);
 router.post("/notifications/:id/read", authenticate, authorizeRole("admin"), markAsRead);
@@ -50,7 +52,7 @@ router.post("/settings/password", authenticate, authorizeRole("admin"), changePa
 router.post("/payment/create-subaccount", authenticate, authorizeRole("admin"), createRazorpaySubAccount);
 
 router.get("/invoices", authenticate, authorizeRole("admin"), getInvoicesAndPayments);
-router.get("/invoices/create", authenticate, authorizeRole("admin"), createInvoicePage);
+router.get("/invoices/create", authenticate, authorizeRole("admin"),  createInvoicePage);
 router.post("/invoices/create", authenticate, authorizeRole("admin"), createInvoice);
 router.get("/invoices/worker", authenticate, authorizeRole("admin"), getWorkerPayments);
 router.get("/invoices/worker/new", authenticate, authorizeRole("admin"), getNewWorkerPayForm);

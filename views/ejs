@@ -530,7 +530,11 @@
             .hero-text h1 {
                 font-size: 2.5rem;
             }
-         
+            
+            .nav-links {
+                display: none;
+            }
+            
             .features-grid {
                 grid-template-columns: 1fr;
             }
@@ -550,6 +554,49 @@
             display: none;
         }
 
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--txt);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: var(--panel);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                gap: 20px;
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .mobile-auth {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 20px;
+            }
+        }
 
          /* Background Styles */
          .auth-background {
@@ -635,59 +682,6 @@
           display: none;
         }
       }
-
-      /* Default: hide mobile button */
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  z-index: 2001;
-}
-
-/* Desktop nav */
-.nav-links {
-  display: flex;
-  gap: 20px;
-}
-
-/* Mobile styles */
-@media (max-width: 768px) {
-  .mobile-menu-btn {
-    display: block;
-  color: var(--muted);
-  }
-
-  .nav-links {
-    position: fixed;
-    top: 70px; /* height of header */
-    left: 0;
-    width: 100%;
-    background-color: var(--panel);
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-    gap: 20px;
-    transform: translateY(-100%);
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 2000;
-  }
-
-  .nav-links.active {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-     .mobile-auth {
-                display: flex;
-                justify-content: center;
-                gap: 10px;
-                margin-top: 20px;
-            }
-}
-
     </style>
 </head>
 <body>
@@ -744,8 +738,8 @@
                         
                     </div>
                     <div class="mobile-auth">
-                        <a href="/auth/login"  class="login-button text-decoration-none text-white">Login</a>
-                        <a href="/auth/register"  class="signup-button text-decoration-none text-black">Sign Up</a>
+                        <button class="login-button"><a href="/auth/login"  class="text-decoration-none text-white">Login</a></button>
+                        <button class="signup-button"><a href="/auth/register"  class="text-decoration-none text-black">Sign Up</a></button>
                     </div>
                 </div>
                 <div class="hero-visual">
@@ -758,7 +752,7 @@
                                 <div class="nav-item"></div>
                             </div>
                         </div>
-                        <div class="dashboard-content"> 
+                        <div class="dashboard-content">
                             <div class="dashboard-card">
                                 <div class="card-title">Active Jobs</div>
                                 <div class="card-value">24</div>
@@ -941,13 +935,6 @@
                 observer.observe(card);
             });
         });
-
-        mobileMenuBtn.addEventListener('click', function() {
-  navLinks.classList.toggle('active');
-  this.querySelector('i').classList.toggle('fa-bars');
-  this.querySelector('i').classList.toggle('fa-times');
-});
-
     </script>
 </body>
 </html>

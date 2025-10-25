@@ -62,44 +62,64 @@ const getWorkers = async (req, res) => {
 
 
 // ✅ Add New Worker
-
 const addWorker = async (req, res) => {
-    try {
-        const { name, email, phone, skills } = req.body;
-        const existUser = await Worker.findOne({ email })
-        if (existUser) {
-            return res.status(400).render("admin/workers", { error: "Email already exists", user: req.user, layout: false })
-        }
+  try {
+    const { name, email, phone, skills } = req.body;
+    const existUser = await Worker.findOne({ email });
 
-        // Generate a default password (phone + "123" for example)
-        const rawPassword = name + "123";
-        const hashedPassword = await bcrypt.hash(rawPassword, 10);
+    const admin = await Admin.findById(req.user.id);
 
-        const worker = new Worker({
-            admin: req.user.id,
-            name,
-            email,
-            phone,
-            availability: true,
-            status: "Active",
-            password: hashedPassword,   // ✅ required field
-            role: "worker"
-        });
+    // If email already exists
+    if (existUser) {
+      // Get workers again to render the same page properly
+      const workers = await Worker.find({ admin: req.user.id }).lean();
 
-        await worker.save();
-
-        await Notification.create({
-            user: req.user.id,
-            message:  `New worker ${worker.name} registered successfully.`,
-            type: "worker"
-        });
-
-        res.redirect(`/admin/workers?success=${encodeURIComponent('Created New Worker')}`);
-    } catch (err) {
-        console.error("Error adding worker:", err);
-        res.status(500).render("error", { error: "Failed to add worker", layout: false });
+      return res.status(400).render("admin/workers", {
+        title: "Worker Management",
+        user: req.user,
+        admin,
+        workers,
+        active: "workerManage",
+        filter: "All",
+        error: "Email already exists",
+      });
     }
+
+    // Generate password and hash
+    const rawPassword = name + "123";
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+    const worker = new Worker({
+      admin: req.user.id,
+      name,
+      email,
+      phone,
+      availability: true,
+      status: "Active",
+      password: hashedPassword,
+      role: "worker",
+    });
+
+    await worker.save();
+
+    await Notification.create({
+      user: req.user.id,
+      message: `New worker ${worker.name} registered successfully.`,
+      type: "Worker",
+    });
+
+    // Redirect with success message (handled by Swal in EJS)
+    res.redirect(`/admin/workers?success=${encodeURIComponent('Created New Worker')}`);
+
+  } catch (err) {
+    console.error("Error adding worker:", err);
+    res.status(500).render("error", {
+      error: "Failed to add worker",
+      layout: false,
+    });
+  }
 };
+
 
 module.exports = {
     getWorkers,

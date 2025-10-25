@@ -61,7 +61,7 @@ const createJob = async (req, res) => {
     });
 
 
-    res.redirect("/customer/request");
+    res.redirect(`/customer/request?success=${encodeURIComponent("Service created successfully") }`);
   } catch (err) {
     console.error("createJob error:", err);
     res.status(500).send("Error creating job");
