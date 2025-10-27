@@ -66,9 +66,7 @@ const updateAdminProfile = async (req, res) => {
 
 const updateProfilePhoto = async (req, res) => {
   try {
-    console.log("📤 Upload request received");
-    console.log("User ID:", req.user?.id);
-    console.log("File:", req.file);
+    
 
     if (!req.file) {
       return res.redirect(

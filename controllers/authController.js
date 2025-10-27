@@ -221,7 +221,7 @@ const forgotPassword = async (req, res) => {
             },
         });
 
-        const resetURL = `http://localhost:5000/auth/reset/${token}`;
+        const resetURL = `https://servizo.shop/auth/reset/${token}`;
         const emailHtml = `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 20px auto; background-color: #151821; border-radius: 12px; border: 1px solid #232735; overflow: hidden;">
             <div style="padding: 20px 30px; background-color: #1a1d24; text-align: center;">
