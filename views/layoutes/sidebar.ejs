@@ -190,9 +190,9 @@
       <% 
         let photoSrc = '/images/logo.svg'; // Default photo
         if (typeof user !== 'undefined' && user && user.profilePhoto) photoSrc = user.profilePhoto;
-        else if (typeof admin !== 'undefined' && admin && admin.profilePhoto) photoSrc = admin.profilePhoto;
-        else if (typeof worker !== 'undefined' && worker && worker.profilePhoto) photoSrc = worker.profilePhoto;
-        else if (typeof customer !== 'undefined' && customer && customer.profilePhoto) photoSrc = customer.profilePhoto;
+        if (typeof admin !== 'undefined' && admin && admin.profilePhoto) photoSrc = admin.profilePhoto;
+        if (typeof worker !== 'undefined' && worker && worker.profilePhoto) photoSrc = worker.profilePhoto;
+        if (typeof customer !== 'undefined' && customer && customer.profilePhoto) photoSrc = customer.profilePhoto;
       %>
       <img class="rounded-circle me-2" src="<%= photoSrc %>" alt="profile" height="50" width="50" style="object-fit: cover;">
       <% if (user) { %>
